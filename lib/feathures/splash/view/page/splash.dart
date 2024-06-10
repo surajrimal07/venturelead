@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:venturelead/core/utils/string_utils.dart';
+import 'package:venturelead/feathures/onboarding/view/page/onboarding_view.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SplashScreenState createState() => _SplashScreenState();
 }
 
@@ -24,6 +28,10 @@ class _SplashScreenState extends State<SplashScreen>
       parent: _controller,
       curve: Curves.easeInOut,
     );
+
+    Future.delayed(const Duration(seconds: 2), () {
+      Get.off(() => const OnboardingScreen());
+    });
   }
 
   @override
@@ -40,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'BusinessLed',
+              AppStrings.appName,
               style: TextStyle(
                 fontSize: 24,
                 color: Colors.red,

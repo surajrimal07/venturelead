@@ -1,0 +1,13 @@
+{
+    "[dart]": {
+        "files.autoSave": "afterDelay"
+    },
+    "editor.rulers": [
+        80
+    ],
+    "editor.tabCompletion": "onlySnippets",
+    "dart.devToolsLocation": {
+        "performance": "active",
+        "default": "beside"
+    },
+}
