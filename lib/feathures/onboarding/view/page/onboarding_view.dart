@@ -1,22 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:venturelead/core/utils/string_utils.dart';
+import 'package:venturelead/core/utils/shared_prefs.dart';
 import 'package:venturelead/feathures/auth/view/view/home.dart';
+import 'package:venturelead/feathures/auth/view/view/login_auth.dart';
 import 'package:venturelead/feathures/common/presentation/widget/button.dart';
 import 'package:venturelead/feathures/onboarding/controller/onboarding_controller.dart';
 import 'package:venturelead/feathures/onboarding/model/onboarding_model.dart';
 import 'package:venturelead/feathures/onboarding/view/widget/onboarding_widget.dart';
 
 class OnboardingScreen extends StatelessWidget {
-  const OnboardingScreen({super.key});
+  OnboardingScreen({super.key});
+  final userPrefs = UserSharedPrefss();
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<OnboardingController>();
     return Scaffold(
       appBar: AppBar(
-        title:
-            const Text(AppStrings.appName, style: TextStyle(color: Colors.red)),
+        title: const Text.rich(
+          TextSpan(
+            text: 'VENTURE',
+            style: TextStyle(color: Colors.black),
+            children: <TextSpan>[
+              TextSpan(
+                text: 'LED',
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+              ),
+            ],
+          ),
+        ),
         centerTitle: true,
         actions: [
           TextButton(
@@ -54,10 +67,8 @@ class OnboardingScreen extends StatelessWidget {
                     controller.currentIndex.value != 3 ? 'Next' : 'Get Started',
                 onPressed: () {
                   if (controller.currentIndex.value == 3) {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                          builder: (context) => const AuthHomeScreen()),
-                    );
+                    userPrefs.saveData<bool>('isOnboardingSeen', true);
+                    Get.to(() => const LoginScreen());
                   } else {
                     controller.pageController.nextPage(
                       duration: const Duration(milliseconds: 300),

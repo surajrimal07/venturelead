@@ -24,6 +24,14 @@ class AuthController extends GetxController {
   void setAuthEntity(User authEntity) {
     authState.value = authState.value.copyWith(authEntity: authEntity);
   }
+
+  void getAuthEntity() {
+    authState.value = authState.value.copyWith(authEntity: authState.value.authEntity);
+  }
+
+  void clear() {
+    authState.value = AuthState.initialState();
+  }
 }
 
 class ApiStateController extends GetxController {

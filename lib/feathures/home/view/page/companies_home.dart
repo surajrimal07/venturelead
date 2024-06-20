@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
 class CompanyPage extends StatelessWidget {
   const CompanyPage({super.key});
@@ -27,7 +28,7 @@ class CompanyPage extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 10),
                     const Text(
                       'Company Listing',
                       style: TextStyle(
@@ -37,28 +38,102 @@ class CompanyPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      'List of Companies Curated By BusinessLed',
-                      style: TextStyle(
-                        color: Colors.grey[300],
-                        fontSize: 16,
+                    RichText(
+                      text: const TextSpan(
+                        text: 'A List of Companies Curated By ',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: 'Venture',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          TextSpan(
+                            text: 'Led',
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Search Companies',
-                        hintStyle: TextStyle(color: Colors.grey[400]),
-                        prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide.none,
+                    // Text(
+                    //   'List of Companies Curated By VentureLed',
+                    //   style: TextStyle(
+                    //     color: Colors.grey[300],
+                    //     fontSize: 16,
+                    //   ),
+                    // ),
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.white),
+                        ),
+                        child: Row(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Icon(
+                                Icons.search,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: TextField(
+                                onTap: () =>
+                                    {HomeController.to.selectedIndex.value = 6},
+                                decoration: const InputDecoration(
+                                  hintText: 'Search Companies',
+                                  hintStyle: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                  border: InputBorder.none,
+                                ),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              icon:
+                                  const Icon(Icons.clear, color: Colors.white),
+                              onPressed: () {
+                                // Clear search field
+                              },
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+
+                    // TextField(
+                    //   onTap: () => {HomeController.to.selectedIndex.value = 6},
+                    //   decoration: InputDecoration(
+                    //     hintText: 'Search Companies',
+                    //     hintStyle: const TextStyle(
+                    //         color: Color.fromARGB(255, 255, 255, 255)),
+                    //     prefixIcon: const Icon(Icons.search,
+                    //         color: Color.fromARGB(255, 255, 255, 255)),
+                    //     filled: true,
+                    //     border: OutlineInputBorder(
+                    //       borderSide:
+                    //           const BorderSide(width: 2.0, color: Colors.white),
+                    //       borderRadius: BorderRadius.circular(10.0),
+                    //     ),
+                    //     fillColor: Colors.blueGrey[700],
+                    //   ),
+                    // ),
+
+                    //  const SizedBox(height: 10),
                   ],
                 ),
               ),

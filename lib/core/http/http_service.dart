@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:venturelead/core/http/api_endpoints.dart';
 import 'package:venturelead/core/toast.dart';
+import 'package:venturelead/core/utils/shared_prefs.dart';
 
 class HttpService extends GetxService {
   late dio_pkg.Dio dio;
@@ -38,10 +39,14 @@ class HttpService extends GetxService {
 }
 
 Future<Map<String, String>> getHeaders() async {
+  final userPrefs = UserSharedPrefss();
+
+  final bearertoken = await userPrefs.getData<String>('bearertoken') ?? '';
+
   Map<String, String> headers = {
     'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer mmmmmmm',
+//    'Content-Type': 'application/json',
+    'Authorization': 'Bearer $bearertoken',
   };
 
   return headers;

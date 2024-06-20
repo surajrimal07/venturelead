@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:venturelead/feathures/auth/view/view/login.dart';
+import 'package:venturelead/feathures/auth/view/view/login_auth.dart';
 
 class AuthHomeScreen extends StatelessWidget {
   const AuthHomeScreen({super.key});
@@ -38,10 +38,10 @@ class AuthHomeScreen extends StatelessWidget {
               const SizedBox(height: 30),
               ElevatedButton.icon(
                 onPressed: () {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                        builder: (context) => const EmailLoginPage()),
-                  );
+                  Get.to(() => LoginScreen());
+                  // Navigator.of(context).pushReplacement(
+                  //   MaterialPageRoute(builder: (context) => LoginScreen()),
+                  // );
                 },
                 icon: SvgPicture.asset(
                   'assets/icons/google.svg',
@@ -62,7 +62,7 @@ class AuthHomeScreen extends StatelessWidget {
               const SizedBox(height: 10),
               OutlinedButton.icon(
                 onPressed: () {
-                  Get.off(() => const EmailLoginPage());
+                  Get.off(() => LoginScreen());
                 },
                 icon: const Icon(Icons.email_outlined),
                 label: const Text('Login with Email'),

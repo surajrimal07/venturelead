@@ -25,20 +25,31 @@ class User {
   final List<String>? employeeCompanyIds;
   final List<String>? connectionIds;
 
-  const User({
+  User({
     required this.username,
     required this.email,
     required this.password,
     this.bio,
     this.darkmode = false,
+    String? picture,
     this.workDomain,
-    this.picture,
     this.favoriteCompanyIds,
     this.favoriteNews,
     this.interests,
     this.employeeCompanyIds,
     this.connectionIds,
-  });
+  }) : picture = _validatePicture(picture ?? '');
+
+  static String _validatePicture(String picture) {
+    final RegExp urlRegExp = RegExp(
+      r'^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$',
+      caseSensitive: false,
+      multiLine: false,
+    );
+    return urlRegExp.hasMatch(picture)
+        ? picture
+        : 'https://res.cloudinary.com/dio3qwd9q/image/upload/fl_preserve_transparency/v1718868382/vecteezy_simple-user-default-icon_24983914_t6rahf.jpg';
+  }
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         username: json['username'] as String,
@@ -79,7 +90,7 @@ class User {
         'connections': connectionIds?.map((id) => {'_id': id}).toList(),
       };
 
-  static const dummy = User(
+  static User dummy = User(
       username: 'No User',
       email: 'hello@nouser.com',
       password: '',

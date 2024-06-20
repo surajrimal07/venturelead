@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:venturelead/feathures/home/view/page/navigation.dart';
+import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
 class ForYouPage extends StatelessWidget {
   const ForYouPage({super.key});

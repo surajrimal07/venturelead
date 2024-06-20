@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:venturelead/feathures/home/view/page/navigation.dart';
+import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
@@ -14,6 +14,10 @@ class DashboardView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextField(
+                onTap: () {
+                  // Get.to(const HomeScreenSearch());
+                  HomeController.to.selectedIndex.value = 6;
+                },
                 decoration: InputDecoration(
                   hintText: 'Search news, companies here',
                   suffixIcon: const Icon(Icons.search),
@@ -130,7 +134,9 @@ class DashboardView extends StatelessWidget {
                         children: [
                           const Text('Founded:2016'),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              HomeController.to.selectedIndex.value = 7;
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
                               side: const BorderSide(color: Colors.red),

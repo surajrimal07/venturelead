@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
-import 'package:venturelead/feathures/home/view/page/navigation.dart';
+import 'package:venturelead/feathures/home/controller/news_controller.dart';
+import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
 AppBarController appbarController = Get.put(AppBarController());
 
@@ -11,6 +12,7 @@ class LatestNewsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
+    final NewsController newsController = Get.put(NewsController());
     // appbarController.setShowSearch(true);
     // appbarController.setShowBack(true);
 
@@ -21,6 +23,10 @@ class LatestNewsView extends StatelessWidget {
         curve: Curves.easeInOut,
       );
     }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      newsController.fetchNews();
+    });
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -41,7 +47,7 @@ class LatestNewsView extends StatelessWidget {
                         style: TextStyle(color: Colors.grey)),
                   ),
                   const Text(
-                    'LatestNews',
+                    'Latest News',
                     style: TextStyle(
                         color: Colors.red,
                         fontWeight: FontWeight.w400,
@@ -58,7 +64,7 @@ class LatestNewsView extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               const Text(
-                'FeaturedStories',
+                'Featured Stories',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.normal,
@@ -67,22 +73,26 @@ class LatestNewsView extends StatelessWidget {
               const SizedBox(height: 8),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    _buildFeaturedStoryCard(
-                        'Production',
-                        '11minread',
-                        'Foreign Direct Investment',
-                        'Nepal Secures Over Rs 53 Billion in Foreign Investment Commitments',
-                        'assets/images/news.jpeg'),
-                    _buildFeaturedStoryCard(
-                        'FinTech',
-                        '15minread',
-                        'Tech Innovation',
-                        'Nepal Secures Over Rs 53 Billion in dddddddddddddddddddddddddddddddddddddddForeign Investment Commitments',
-                        'assets/images/news.jpeg'),
-                  ],
-                ),
+                child: Obx(() {
+                  if (newsController.isLoading.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (newsController.errorMessage.isNotEmpty) {
+                    return Center(
+                        child: Text(newsController.errorMessage.value));
+                  } else {
+                    return Row(
+                      children: newsController.newsList
+                          .map((news) => _buildFeaturedStoryCard(
+                                news.category,
+                                news.readTime,
+                                news.title,
+                                news.description,
+                                'assets/images/news.jpeg', // Assuming you have a placeholder image
+                              ))
+                          .toList(),
+                    );
+                  }
+                }),
               ),
               const SizedBox(height: 20),
               const Text(
@@ -93,17 +103,24 @@ class LatestNewsView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              _buildTrendingStoryCard(
-                  'Business and Tech News',
-                  'Nepal Hosts International Dialogue to Address Climate Change Impact on Mountain Ecosystems',
-                  'May 15, 2024',
-                  'assets/images/news.jpeg'),
-              const SizedBox(height: 10),
-              _buildTrendingStoryCard(
-                  'Business and Tech News',
-                  'Nepal and Armenia Chambers of Commerce Forge Economic Partnership',
-                  'May 18, 2024',
-                  'assets/images/news.jpeg'),
+              Obx(() {
+                if (newsController.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (newsController.errorMessage.isNotEmpty) {
+                  return Center(child: Text(newsController.errorMessage.value));
+                } else {
+                  return Column(
+                    children: newsController.newsList
+                        .map((news) => _buildTrendingStoryCard(
+                              news.category,
+                              news.title,
+                              news.pubDate,
+                              'assets/images/news.jpeg',
+                            ))
+                        .toList(),
+                  );
+                }
+              }),
             ],
           ),
         ),

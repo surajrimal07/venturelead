@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:venturelead/core/utils/shared_prefs.dart';
 import 'package:venturelead/core/utils/string_utils.dart';
+import 'package:venturelead/feathures/auth/controller/auth_network_controller.dart';
+import 'package:venturelead/feathures/auth/view/view/login_auth.dart';
+import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 import 'package:venturelead/feathures/onboarding/view/page/onboarding_view.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -15,6 +19,38 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+  final userPrefs = UserSharedPrefss();
+
+  void _handleNavigation() async {
+    try {
+      final isOnboardingSeen =
+          await userPrefs.getData<bool>('isOnboardingSeen');
+      final isOnboardingSeenValue = isOnboardingSeen ?? false;
+
+      if (isOnboardingSeenValue) {
+        final isLoginSaved = await userPrefs.getData<bool>('isLoggedInSave');
+        final isLoginSavedValue = isLoginSaved ?? false;
+
+        if (isLoginSavedValue) {
+          final email = await userPrefs.getData<String>('email') ?? '';
+          final password = await userPrefs.getData<String>('password') ?? '';
+
+          bool isLoggedIn = await handleLoginController(email, password);
+          if (isLoggedIn) {
+            Get.off(() => HomeView());
+          } else {
+            Get.off(() => const LoginScreen());
+          }
+        } else {
+          Get.off(() => const LoginScreen());
+        }
+      } else {
+        Get.off(() => OnboardingScreen());
+      }
+    } catch (e) {
+      Get.off(() => const LoginScreen());
+    }
+  }
 
   @override
   void initState() {
@@ -30,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     Future.delayed(const Duration(seconds: 2), () {
-      Get.off(() => const OnboardingScreen());
+      _handleNavigation();
     });
   }
 

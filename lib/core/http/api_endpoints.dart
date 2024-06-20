@@ -7,10 +7,10 @@ class ApiEndpoints {
   static const Duration receiveTimeout = Duration(seconds: 1000);
 
   static const String HTTPS = "http://";
-  static const String PORT = ":5000/api";
+  static const String PORT = ":5050";
 
   //localhost
-  static const String ADDRESS = "10.12.8.10";
+  static const String ADDRESS = "192.168.56.1";
   static const String SERVER_ADDRESS = "$HTTPS$ADDRESS$PORT";
 
   static const String LOGIN = "/login";
