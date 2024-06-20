@@ -4,8 +4,6 @@ import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
 import 'package:venturelead/feathures/home/controller/news_controller.dart';
 import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
-AppBarController appbarController = Get.put(AppBarController());
-
 class LatestNewsView extends StatelessWidget {
   const LatestNewsView({super.key});
 
@@ -13,8 +11,9 @@ class LatestNewsView extends StatelessWidget {
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
     final NewsController newsController = Get.put(NewsController());
-    // appbarController.setShowSearch(true);
-    // appbarController.setShowBack(true);
+    final appBarController = Get.find<AppBarController>();
+
+  
 
     void scrollToTop() {
       scrollController.animateTo(

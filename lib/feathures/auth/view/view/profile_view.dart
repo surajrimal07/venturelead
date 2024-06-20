@@ -330,6 +330,25 @@ class _ProfilePageState extends State<ProfileScreen> {
                     ),
                   ),
                 ),
+                const SizedBox(width: 10),
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      selectedTab = 'Connections';
+                    });
+                  },
+                  child: Text(
+                    'Connections',
+                    style: TextStyle(
+                      color: selectedTab == 'Connections'
+                          ? Colors.red
+                          : Colors.grey,
+                      fontWeight: selectedTab == 'Connections'
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                    ),
+                  ),
+                )
               ],
             ),
             // const SizedBox(height: 10),

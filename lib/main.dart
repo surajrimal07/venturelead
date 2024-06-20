@@ -4,6 +4,7 @@ import 'package:venturelead/core/app.dart';
 import 'package:venturelead/core/http/http_service.dart';
 import 'package:venturelead/core/utils/theme.dart';
 import 'package:venturelead/feathures/auth/controller/auth_controller.dart';
+import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
 import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 import 'package:venturelead/feathures/onboarding/controller/onboarding_controller.dart';
 
@@ -14,5 +15,7 @@ void main() async {
   Get.put(ThemeController());
   Get.put(OnboardingController());
   Get.put(AuthController());
+  Get.put(AppBarController());
+
   runApp(const App());
 }

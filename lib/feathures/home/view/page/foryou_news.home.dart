@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
 import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
 class ForYouPage extends StatelessWidget {
@@ -7,6 +9,7 @@ class ForYouPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
+    final appBarController = Get.put(AppBarController());
 
     void scrollToTop() {
       scrollController.animateTo(
@@ -29,6 +32,13 @@ class ForYouPage extends StatelessWidget {
                   children: [
                     TextButton(
                       onPressed: () {
+                        appBarController.showBack.value = false;
+                        appBarController.showBookmark.value = true;
+                        appBarController.showSearch.value = false;
+                        appBarController.showShare.value = false;
+                        appBarController.showCustomText.value = false;
+                        appBarController.showNotificationIcon.value = true;
+
                         HomeController.to.selectedIndex.value = 0;
                       },
                       child: const Text(

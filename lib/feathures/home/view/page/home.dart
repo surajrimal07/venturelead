@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
 import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
 class DashboardView extends StatelessWidget {
-  const DashboardView({super.key});
+  DashboardView({super.key});
+  final appBarController = Get.put(AppBarController());
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +49,9 @@ class DashboardView extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        // appBarController.showAppBar.value = false;
+                      });
                       HomeController.to.selectedIndex.value = 4;
                     },
                     child: const Text('Latest News',
@@ -53,6 +59,10 @@ class DashboardView extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () {
+                      appBarController.showSearch.value = true;
+                      appBarController.showBack.value = true;
+                      appBarController.showBookmark.value = true;
+
                       HomeController.to.selectedIndex.value = 5;
                     },
                     child: const Text('For You',
@@ -135,6 +145,13 @@ class DashboardView extends StatelessWidget {
                           const Text('Founded:2016'),
                           ElevatedButton(
                             onPressed: () {
+                              appBarController.showSearch.value = true;
+                              appBarController.showBack.value = true;
+                              appBarController.showBookmark.value = true;
+                              appBarController.showShare.value = true;
+                              appBarController.showCustomText.value = true;
+                              appBarController.customText.value = 'Karkhana';
+
                               HomeController.to.selectedIndex.value = 7;
                             },
                             style: ElevatedButton.styleFrom(

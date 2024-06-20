@@ -51,6 +51,8 @@ dependencies:
   path_provider: ^2.1.1
   permission_handler: ^11.2.0
   font_awesome_flutter: ^10.7.0
+  webview_flutter: ^3.0.4
+  url_launcher: ^6.1.12
 
 dev_dependencies:
   flutter_test:
