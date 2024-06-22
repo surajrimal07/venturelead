@@ -1,14 +1,136 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
+import 'package:venturelead/feathures/home/controller/companies_controller.dart';
 import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
 class DashboardView extends StatelessWidget {
   DashboardView({super.key});
   final appBarController = Get.put(AppBarController());
 
+  final CompanyController companyController = Get.put(CompanyController());
+
+  cleanDescription(String description) {
+    return description.replaceAll(RegExp(r'<[^>]*>|&nbsp;'), '');
+  }
+
+  cleanFoundedDate(String date) {
+    return date.substring(0, 10);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final companies = companyController.getCompanies;
+
+    Widget buildCompanyCard(company) {
+      return Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        elevation: 3,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Image(
+                      image: AssetImage('assets/images/karkhana.png'),
+                      height: 50),
+                  const SizedBox(width: 10),
+                  Text(
+                    company['name'],
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.bookmark_border),
+                    onPressed: () {},
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.share),
+                    onPressed: () {
+                      Share.share(
+                          'Check out this company: ${company['name']} in VentureLead App!');
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Text(
+                // company['basicDescription'],
+                cleanDescription(company['basicDescription']),
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('CoreTeam'),
+                      SizedBox(height: 5),
+                      Text('1. Pavitra Gautam'),
+                      Text('2. Sakar Pudasaini'),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Industries'),
+                      const SizedBox(height: 5),
+                      Text(company['category']),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Founded: ${cleanFoundedDate(company['registration'])}'),
+                  ElevatedButton(
+                    onPressed: () {
+                      appBarController.showSearch.value = true;
+                      appBarController.showBack.value = true;
+                      appBarController.showBookmark.value = true;
+                      appBarController.showShare.value = true;
+                      appBarController.showCustomText.value = true;
+                      appBarController.customText.value = company['name'];
+
+                      companyController.setSelectedCompany(company);
+
+                      // companyController.companyState.value
+                      //     .copyWith(selectedCompany: company);
+
+                      HomeController.to.selectedIndex.value = 7;
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      side: const BorderSide(color: Colors.red),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                    child: const Text(
+                      'View Profile',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -18,7 +140,6 @@ class DashboardView extends StatelessWidget {
             children: [
               TextField(
                 onTap: () {
-                  // Get.to(const HomeScreenSearch());
                   HomeController.to.selectedIndex.value = 6;
                 },
                 decoration: InputDecoration(
@@ -32,7 +153,7 @@ class DashboardView extends StatelessWidget {
                   fillColor: Colors.grey[200],
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -49,9 +170,6 @@ class DashboardView extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () {
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        // appBarController.showAppBar.value = false;
-                      });
                       HomeController.to.selectedIndex.value = 4;
                     },
                     child: const Text('Latest News',
@@ -70,108 +188,8 @@ class DashboardView extends StatelessWidget {
                   )
                 ],
               ),
-              const SizedBox(height: 20),
-              // const Text(
-              //   'May 14, 2024',
-              //   style: TextStyle(fontSize: 16, color: Colors.black),
-              // ),
               const SizedBox(height: 10),
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                elevation: 3,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Image(
-                              image: AssetImage('assets/images/karkhana.png'),
-                              height: 50),
-                          const SizedBox(width: 10),
-                          const Text(
-                            'Karkhana',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const Spacer(),
-                          IconButton(
-                            icon: const Icon(Icons.bookmark_border),
-                            onPressed: () {},
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.share),
-                            onPressed: () {},
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'Karkhana is a social enterprise dedicated to designing hands-on learning experiences for students inside regular classrooms. Karkhana aim to foster a culture of experimentation.',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      const SizedBox(height: 20),
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('CoreTeam'),
-                              SizedBox(height: 5),
-                              Text('1. Pavitra Gautam'),
-                              Text('2. Sakar Pudasaini'),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Industries'),
-                              SizedBox(height: 5),
-                              Text('Fintech'),
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Founded:2016'),
-                          ElevatedButton(
-                            onPressed: () {
-                              appBarController.showSearch.value = true;
-                              appBarController.showBack.value = true;
-                              appBarController.showBookmark.value = true;
-                              appBarController.showShare.value = true;
-                              appBarController.showCustomText.value = true;
-                              appBarController.customText.value = 'Karkhana';
-
-                              HomeController.to.selectedIndex.value = 7;
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              side: const BorderSide(color: Colors.red),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                            ),
-                            child: const Text(
-                              'ViewProfile',
-                              style: TextStyle(color: Colors.red),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              for (var company in companies) buildCompanyCard(company),
             ],
           ),
         ),

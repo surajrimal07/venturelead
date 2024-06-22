@@ -13,6 +13,13 @@ class SettingsController extends GetxController {
   }
 
   void toggleNotification() {
+    Get.showSnackbar(const GetSnackBar(
+      title: 'Info',
+      message: 'Notification toggled successfully',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.green,
+      duration: Duration(seconds: 1),
+    ));
     isNotificationOn.value = !isNotificationOn.value;
   }
 
@@ -20,9 +27,27 @@ class SettingsController extends GetxController {
     if (Get.isDarkMode) {
       Get.changeTheme(ThemeData.light());
       isDarkModeOn.value = false;
+      Get.showSnackbar(
+        const GetSnackBar(
+          title: 'Info',
+          message: 'Dark mode turned off',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 1),
+        ),
+      );
     } else {
       Get.changeTheme(ThemeData.dark());
       isDarkModeOn.value = true;
+      Get.showSnackbar(
+        const GetSnackBar(
+          title: 'Info',
+          message: 'Dark mode turned on',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 1),
+        ),
+      );
     }
   }
 }

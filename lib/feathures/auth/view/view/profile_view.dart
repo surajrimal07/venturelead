@@ -8,8 +8,11 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:venturelead/feathures/auth/controller/auth_controller.dart';
 import 'package:venturelead/feathures/auth/controller/auth_network_controller.dart';
 import 'package:venturelead/feathures/auth/model/user_model.dart';
+import 'package:venturelead/feathures/auth/view/widget/connection_widget.dart';
 import 'package:venturelead/feathures/auth/view/widget/interestcard_widget.dart';
 import 'package:venturelead/feathures/auth/view/widget/settings_widget.dart';
+import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
+import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -22,9 +25,12 @@ class _ProfilePageState extends State<ProfileScreen> {
   String selectedTab = 'About';
 
   final AuthController authController = Get.find<AuthController>();
+  final AppBarController appBarController = Get.put(AppBarController());
 
   final User user = Get.find<AuthController>().authState.value.authEntity;
   File? img;
+
+  List<String> interestNames = [];
 
   Future browseImage(ImageSource imageSource, String email) async {
     try {
@@ -232,138 +238,198 @@ class _ProfilePageState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (user.interests != null && user.interests!.isNotEmpty) {
+      String interestString = user.interests![0];
+      interestString = interestString.substring(1, interestString.length - 1);
+
+      interestNames =
+          interestString.split(',').map((item) => item.trim()).toList();
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          TextButton(
-            onPressed: () {
-              showEditProfileModal(context);
-            },
-            child: const Text(
-              'Edit Profile',
-              style: TextStyle(color: Colors.red),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          toolbarHeight: 40,
+          actions: [
+            TextButton(
+              onPressed: () {
+                showEditProfileModal(context);
+              },
+              child: const Text(
+                'Edit Profile',
+                style: TextStyle(color: Colors.red),
+              ),
             ),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            CircleAvatar(
-                radius: 50, backgroundImage: NetworkImage(user.picture!)),
-            const SizedBox(height: 10),
-            Text(
-              user.username,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 4),
-            Text(user.email),
-            const SizedBox(height: 10),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-            //     Chip(
-            //       label: const Text('Entrepreneur'),
-            //       backgroundColor: Colors.grey[200],
-            //     ),
-            //     const SizedBox(width: 8),
-            //     Chip(
-            //       label: const Text('Aspiring entrepreneur'),
-            //       backgroundColor: Colors.grey[200],
-            //     ),
-            //   ],
-            // ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedTab = 'About';
-                    });
-                  },
-                  child: Text(
-                    'About',
-                    style: TextStyle(
-                      color: selectedTab == 'About' ? Colors.red : Colors.grey,
-                      fontWeight: selectedTab == 'About'
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedTab = 'Interests';
-                    });
-                  },
-                  child: Text(
-                    'Interests',
-                    style: TextStyle(
-                      color:
-                          selectedTab == 'Interests' ? Colors.red : Colors.grey,
-                      fontWeight: selectedTab == 'Interests'
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedTab = 'Settings';
-                    });
-                  },
-                  child: Text(
-                    'Settings',
-                    style: TextStyle(
-                      color:
-                          selectedTab == 'Settings' ? Colors.red : Colors.grey,
-                      fontWeight: selectedTab == 'Settings'
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedTab = 'Connections';
-                    });
-                  },
-                  child: Text(
-                    'Connections',
-                    style: TextStyle(
-                      color: selectedTab == 'Connections'
-                          ? Colors.red
-                          : Colors.grey,
-                      fontWeight: selectedTab == 'Connections'
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                    ),
-                  ),
-                )
-              ],
-            ),
-            // const SizedBox(height: 10),
-            if (selectedTab == 'About') AboutCard(user),
-            if (selectedTab == 'Interests')
-              const InterestCard(interests: [
-                'Event Announcements',
-                'Discover New Startups',
-                'Business and Tech News'
-              ]),
-            if (selectedTab == 'Settings') SettingsCard(),
           ],
         ),
-      ),
-    );
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              CircleAvatar(
+                  radius: 50, backgroundImage: NetworkImage(user.picture!)),
+              //const SizedBox(height: 10),
+              Text(
+                user.username,
+                style:
+                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 4),
+              Text(user.email),
+              const SizedBox(height: 4),
+              Text(
+                'Employee of ${user.employeeCompanyIds != null && user.employeeCompanyIds!.isNotEmpty ? user.employeeCompanyIds!.join(', ') : 'None'}',
+              ),
+
+              const SizedBox(height: 5),
+              SizedBox(
+                height: 50,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            selectedTab = 'About';
+                          });
+                        },
+                        child: Text(
+                          'About',
+                          style: TextStyle(
+                            color: selectedTab == 'About'
+                                ? Colors.red
+                                : Colors.grey,
+                            fontWeight: selectedTab == 'About'
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            selectedTab = 'Interests';
+                          });
+                        },
+                        child: Text(
+                          'Interests',
+                          style: TextStyle(
+                            color: selectedTab == 'Interests'
+                                ? Colors.red
+                                : Colors.grey,
+                            fontWeight: selectedTab == 'Interests'
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            selectedTab = 'Settings';
+                          });
+                        },
+                        child: Text(
+                          'Settings',
+                          style: TextStyle(
+                            color: selectedTab == 'Settings'
+                                ? Colors.red
+                                : Colors.grey,
+                            fontWeight: selectedTab == 'Settings'
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            selectedTab = 'Connections';
+                          });
+                        },
+                        child: Text(
+                          'Connections',
+                          style: TextStyle(
+                            color: selectedTab == 'Connections'
+                                ? Colors.red
+                                : Colors.grey,
+                            fontWeight: selectedTab == 'Connections'
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            selectedTab = 'Reviews';
+                          });
+                        },
+                        child: Text(
+                          'Reviews',
+                          style: TextStyle(
+                            color: selectedTab == 'Reviews'
+                                ? Colors.red
+                                : Colors.grey,
+                            fontWeight: selectedTab == 'Reviews'
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            selectedTab = 'Favorite Companies';
+                          });
+                        },
+                        child: Text(
+                          'Favorite Companies',
+                          style: TextStyle(
+                            color: selectedTab == 'Favorite Companies'
+                                ? Colors.red
+                                : Colors.grey,
+                            fontWeight: selectedTab == 'Favorite Companies'
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              if (selectedTab == 'About') AboutCard(user),
+              if (selectedTab == 'Interests')
+                InterestCard(interests: interestNames),
+              if (selectedTab == 'Settings') SettingsCard(),
+              if (selectedTab == 'Connections') ConnectionCard(user: user),
+            ],
+          ),
+        ),
+        floatingActionButton: RawMaterialButton(
+          onPressed: () {
+            appBarController.showBack.value = true;
+            appBarController.showCustomText.value = true;
+            appBarController.customText.value = 'FAQ';
+            appBarController.showBookmark.value = false;
+            appBarController.showNotificationIcon.value = false;
+            HomeController.to.selectedIndex.value = 10;
+          },
+          elevation: 6.0,
+          fillColor: const Color.fromARGB(255, 216, 106, 98),
+          shape: const CircleBorder(),
+          padding: const EdgeInsets.all(16.0),
+          child: const Icon(
+            Icons.support_agent,
+            color: Colors.white,
+          ),
+        ));
   }
 }
 
@@ -394,6 +460,14 @@ class AboutCard extends StatelessWidget {
                   "You haven't told us anything about yourself. Please add your bio to complete your user profile.",
               style: const TextStyle(color: Colors.grey),
             ),
+            // const Text(
+            //   'Employee of ',
+            //   style: TextStyle(
+            //     fontSize: 18,
+            //     fontWeight: FontWeight.bold,
+            //   ),
+            // ),
+            const SizedBox(height: 8),
           ],
         ),
       ),

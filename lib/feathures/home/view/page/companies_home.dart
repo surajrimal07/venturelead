@@ -1,20 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
+import 'package:venturelead/feathures/home/controller/companies_controller.dart';
 import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
 class CompanyPage extends StatelessWidget {
-  const CompanyPage({super.key});
+  CompanyPage({super.key});
+  final CompanyController companyController = Get.put(CompanyController());
+  final appBarController = Get.put(AppBarController());
+  final ScrollController scrollController = ScrollController();
+
+  cleanDescription(String description) {
+    return description.replaceAll(RegExp(r'<[^>]*>|&nbsp;'), '');
+  }
+
+  void scrollToTop() {
+    scrollController.animateTo(
+      0,
+      duration: const Duration(seconds: 1),
+      curve: Curves.easeInOut,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final ScrollController scrollController = ScrollController();
-
-    void scrollToTop() {
-      scrollController.animateTo(
-        0,
-        duration: const Duration(seconds: 1),
-        curve: Curves.easeInOut,
-      );
-    }
+    final companies = companyController.getCompanies;
 
     return Scaffold(
         backgroundColor: Colors.grey[200],
@@ -62,13 +72,6 @@ class CompanyPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    // Text(
-                    //   'List of Companies Curated By VentureLed',
-                    //   style: TextStyle(
-                    //     color: Colors.grey[300],
-                    //     fontSize: 16,
-                    //   ),
-                    // ),
                     const SizedBox(height: 10),
                     Container(
                       padding: const EdgeInsets.all(8.0),
@@ -103,37 +106,17 @@ class CompanyPage extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            IconButton(
-                              icon:
-                                  const Icon(Icons.clear, color: Colors.white),
-                              onPressed: () {
-                                // Clear search field
-                              },
-                            ),
+                            // IconButton(
+                            //   icon:
+                            //       const Icon(Icons.clear, color: Colors.white),
+                            //   onPressed: () {
+                            //     // Clear search field
+                            //   },
+                            // ),
                           ],
                         ),
                       ),
                     ),
-
-                    // TextField(
-                    //   onTap: () => {HomeController.to.selectedIndex.value = 6},
-                    //   decoration: InputDecoration(
-                    //     hintText: 'Search Companies',
-                    //     hintStyle: const TextStyle(
-                    //         color: Color.fromARGB(255, 255, 255, 255)),
-                    //     prefixIcon: const Icon(Icons.search,
-                    //         color: Color.fromARGB(255, 255, 255, 255)),
-                    //     filled: true,
-                    //     border: OutlineInputBorder(
-                    //       borderSide:
-                    //           const BorderSide(width: 2.0, color: Colors.white),
-                    //       borderRadius: BorderRadius.circular(10.0),
-                    //     ),
-                    //     fillColor: Colors.blueGrey[700],
-                    //   ),
-                    // ),
-
-                    //  const SizedBox(height: 10),
                   ],
                 ),
               ),
@@ -147,40 +130,34 @@ class CompanyPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const CompanyCard(
-                logoUrl: 'assets/images/news.jpeg',
-                name: 'SignalOne',
-                description:
-                    'SignalOne is the first modern B2B technology platform for real estate in Nepal. The platform brings new technology',
-                category: 'Technology, Real Estate',
-                location: 'Kathmandu, Nepal',
-                businessType: 'B2C',
-              ),
-              const CompanyCard(
-                logoUrl: 'assets/images/news.jpeg',
-                name: 'FoodKart',
-                description:
-                    'Founded in 2010 FoodKart is a pioneer in the foodtech space, building the first global Intelligent food cold storage',
-                category: 'FoodTech',
-                location: 'Chitwan, Nepal',
-                businessType: 'B2B',
-              ),
-              const CompanyCard(
-                logoUrl: 'assets/images/news.jpeg',
-                name: 'StudioOne',
-                description:
-                    'StudioOne Pvt Ltd, a active young studio for sounds and soundtech. Studio One brings new innovation to the sound industry',
-                category: 'SoundTech',
-                location: 'Kathmandu, Nepal',
-                businessType: 'B2C',
-              ),
+              for (var company in companies)
+                GestureDetector(
+                  onTap: () {
+                    appBarController.showSearch.value = true;
+                    appBarController.showBack.value = true;
+                    appBarController.showBookmark.value = true;
+                    appBarController.showShare.value = true;
+                    appBarController.showCustomText.value = true;
+                    appBarController.customText.value = company['name'];
+                    companyController.setSelectedCompany(company);
+                    HomeController.to.selectedIndex.value = 7;
+                  },
+                  child: CompanyCard(
+                    logoUrl: 'assets/images/news.jpeg',
+                    name: company['name'],
+                    description: cleanDescription(company['contentData']),
+                    category: company['category'],
+                    location: company['address'],
+                    businessType: company['businesstype'],
+                  ),
+                ),
             ],
           ),
         ),
         floatingActionButton: RawMaterialButton(
           onPressed: scrollToTop,
           elevation: 6.0,
-          fillColor: Colors.grey[900],
+          fillColor: const Color.fromARGB(255, 216, 106, 98),
           shape: const CircleBorder(),
           padding: const EdgeInsets.all(16.0),
           child: const Icon(

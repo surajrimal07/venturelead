@@ -4,6 +4,7 @@ import 'package:venturelead/core/utils/shared_prefs.dart';
 import 'package:venturelead/core/utils/string_utils.dart';
 import 'package:venturelead/feathures/auth/controller/auth_network_controller.dart';
 import 'package:venturelead/feathures/auth/view/view/login_auth.dart';
+import 'package:venturelead/feathures/home/controller/network_controller.dart';
 import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 import 'package:venturelead/feathures/onboarding/view/page/onboarding_view.dart';
 
@@ -37,7 +38,9 @@ class _SplashScreenState extends State<SplashScreen>
 
           bool isLoggedIn = await handleLoginController(email, password);
           if (isLoggedIn) {
-            Get.off(() => HomeView());
+            await fetchCompanies();
+
+            Get.off(() => const HomeView());
           } else {
             Get.off(() => const LoginScreen());
           }

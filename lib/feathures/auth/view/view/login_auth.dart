@@ -4,6 +4,7 @@ import 'package:venturelead/core/utils/shared_prefs.dart';
 import 'package:venturelead/feathures/auth/controller/auth_network_controller.dart';
 import 'package:venturelead/feathures/auth/view/view/forget_password_auth.dart';
 import 'package:venturelead/feathures/auth/view/view/register.dart';
+import 'package:venturelead/feathures/home/controller/network_controller.dart';
 import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
 class LoginController extends GetxController {
@@ -197,7 +198,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             await userPrefs.saveData<String>(
                                 'password', _passwordController.text);
 
-                            Get.offAll(HomeView());
+                            await fetchCompanies();
+
+                            Get.offAll(const HomeView());
                           }
                         }
                       },

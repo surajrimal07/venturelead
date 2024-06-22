@@ -7,12 +7,17 @@ import 'package:venturelead/core/utils/theme.dart';
 import 'package:venturelead/feathures/auth/view/view/profile_view.dart';
 import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
 import 'package:venturelead/feathures/home/view/page/blog_home.dart';
+import 'package:venturelead/feathures/home/view/page/bookmark_home.dart';
 import 'package:venturelead/feathures/home/view/page/companies_home.dart';
 import 'package:venturelead/feathures/home/view/page/company_home.dart';
+import 'package:venturelead/feathures/home/view/page/company_test.dart';
+import 'package:venturelead/feathures/home/view/page/contact_home.dart';
+import 'package:venturelead/feathures/home/view/page/faq_home.dart';
 import 'package:venturelead/feathures/home/view/page/foryou_news.home.dart';
 import 'package:venturelead/feathures/home/view/page/home.dart';
 import 'package:venturelead/feathures/home/view/page/latest_news_home.dart';
-import 'package:venturelead/feathures/home/view/page/search.dart';
+import 'package:venturelead/feathures/home/view/page/notification_home.dart';
+import 'package:venturelead/feathures/home/view/page/search_company.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -45,11 +50,16 @@ class HomeView extends StatelessWidget {
       bottomNavigationBar: Obx(() {
         final selectedIndex = HomeController.to.selectedIndex.value;
         return SalomonBottomBar(
-          currentIndex: selectedIndex == 4 || selectedIndex == 5
+          currentIndex: selectedIndex == 4 ||
+                  selectedIndex == 5 ||
+                  selectedIndex == 8 ||
+                  selectedIndex == 9
               ? 0
               : selectedIndex == 6 || selectedIndex == 7
                   ? 2
-                  : selectedIndex,
+                  : selectedIndex == 10 || selectedIndex == 11
+                      ? 3
+                      : selectedIndex,
           selectedItemColor: Colors.red,
           unselectedItemColor: Colors.grey,
           selectedColorOpacity: 0.8,
@@ -81,16 +91,17 @@ class HomeView extends StatelessWidget {
                 Icons.home,
                 color: selectedIndex == 0 ||
                         selectedIndex == 4 ||
-                        selectedIndex == 5
+                        selectedIndex == 5 ||
+                        selectedIndex == 8 ||
+                        selectedIndex == 9
                     ? Colors.white
                     : Colors.grey,
               ),
             ),
             SalomonBottomBarItem(
-              icon: Icon(Icons.calendar_today,
+              icon: Icon(Icons.newspaper,
                   color: selectedIndex == 1 ? Colors.white : Colors.grey),
-              title:
-                  const Text("Events", style: TextStyle(color: Colors.white)),
+              title: const Text("News", style: TextStyle(color: Colors.white)),
             ),
             SalomonBottomBarItem(
               icon: Icon(
@@ -108,7 +119,11 @@ class HomeView extends StatelessWidget {
             ),
             SalomonBottomBarItem(
               icon: Icon(Icons.account_circle,
-                  color: selectedIndex == 3 ? Colors.white : Colors.grey),
+                  color: selectedIndex == 3 ||
+                          selectedIndex == 10 ||
+                          selectedIndex == 11
+                      ? Colors.white
+                      : Colors.grey),
               title:
                   const Text("Profile", style: TextStyle(color: Colors.white)),
             ),
@@ -126,12 +141,16 @@ class HomeController extends GetxController {
   List<Widget> lstScreen = [
     DashboardView(),
     const BlogPage(),
-    const CompanyPage(),
+    CompanyPage(),
     const ProfileScreen(),
     const LatestNewsView(),
     const ForYouPage(),
     const HomeScreenSearch(),
-    const CompanyDetails(),
+    CompanyDetails(),
+    const NotificationScreen(),
+    const BookmarkScreen(),
+    const FAQScreen(),
+    const ContactUsScreen(),
   ];
 }
 
@@ -144,7 +163,9 @@ class AppBarWidget extends StatelessWidget {
     return Obx(() {
       final showBack = appBarController.showBack.value;
       final showBookmark = appBarController.showBookmark.value;
+      final showNotifi = appBarController.showNotificationIcon.value;
       final showSearch = appBarController.showSearch.value;
+      final showSetting = appBarController.showSettings.value;
       final showShare = appBarController.showShare.value;
       final showCustomText = appBarController.showCustomText.value;
       final customText = appBarController.customText.value;
@@ -171,9 +192,12 @@ class AppBarWidget extends StatelessWidget {
         centerTitle: centerTitle,
         title: GestureDetector(
           onTap: () {
-            appBarController.showSearch.value = false;
             appBarController.showBack.value = false;
-            appBarController.showBookmark.value = false;
+            appBarController.showBookmark.value = true;
+            appBarController.showSearch.value = false;
+            appBarController.showShare.value = false;
+            appBarController.showCustomText.value = false;
+            appBarController.showNotificationIcon.value = true;
 
             HomeController.to.selectedIndex.value = 0;
           },
@@ -197,17 +221,26 @@ class AppBarWidget extends StatelessWidget {
                 ),
         ),
         actions: [
-          if (showBookmark)
+          if (showNotifi)
             IconButton(
               icon: const Icon(Icons.notifications_outlined),
               onPressed: () {
-                // Handle bookmark button action
+                appBarController.showNotificationIcon.value = false;
+                appBarController.showBack.value = true;
+                appBarController.showCustomText.value = false;
+                HomeController.to.selectedIndex.value = 8;
+                //Get.to(const DocumentViewer(title: 'Companies'));
               },
             ),
           if (showBookmark)
             IconButton(
               icon: const Icon(Icons.bookmark_border),
               onPressed: () {
+                appBarController.showNotificationIcon.value = true;
+                appBarController.showBookmark.value = false;
+                appBarController.showCustomText.value = false;
+                appBarController.showBack.value = true;
+                HomeController.to.selectedIndex.value = 9;
                 // Handle bookmark button action
               },
             ),
@@ -215,14 +248,26 @@ class AppBarWidget extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.search),
               onPressed: () {
-                // Handle search button action
+                appBarController.showSearch.value = false;
+                appBarController.showCustomText.value = false;
+                HomeController.to.selectedIndex.value = 6;
+              },
+            ),
+          if (showSetting)
+            IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () {
+                appBarController.showSearch.value = false;
+                appBarController.showCustomText.value = false;
+                HomeController.to.selectedIndex.value = 6;
               },
             ),
           if (showShare)
             IconButton(
               icon: const Icon(Icons.share),
               onPressed: () {
-                // Handle share button action
+                Get.to(const TargetMarketUI());
+                //Share.share('Check out this awesome business app VentureLead');
               },
             ),
         ],

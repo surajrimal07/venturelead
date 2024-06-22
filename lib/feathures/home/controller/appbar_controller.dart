@@ -6,12 +6,17 @@ class AppBarController extends GetxController {
   var showBack = false.obs;
   var showShare = false.obs;
   var showNotificationIcon = true.obs;
+  var showSettings = false.obs;
   var showBookmark = true.obs;
   var showCustomText = false.obs;
   var customText = ''.obs;
 
   setShowSearch(bool isSearchVisible) {
     showSearch(isSearchVisible);
+  }
+
+  setShowSettings(bool isSearchVisible) {
+    showSettings(isSearchVisible);
   }
 
   setShowBack(bool isBackVisible) {

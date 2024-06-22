@@ -1,5 +1,6 @@
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:venturelead/feathures/home/model/connection_model.dart';
 
 class UserModelController extends GetxController {
   final Rx<User> _user = Rx(User.dummy);
@@ -19,11 +20,12 @@ class User {
   final bool darkmode;
   final String? workDomain;
   final String? picture;
+  
   final List<String>? favoriteCompanyIds;
   final List<FavoriteNews>? favoriteNews;
   final List<String>? interests;
   final List<String>? employeeCompanyIds;
-  final List<String>? connectionIds;
+  final List<Connections>? connections;
 
   User({
     required this.username,
@@ -37,7 +39,7 @@ class User {
     this.favoriteNews,
     this.interests,
     this.employeeCompanyIds,
-    this.connectionIds,
+    this.connections,
   }) : picture = _validatePicture(picture ?? '');
 
   static String _validatePicture(String picture) {
@@ -52,27 +54,25 @@ class User {
   }
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-        username: json['username'] as String,
-        email: json['email'] as String,
-        password: json['password'] as String,
-        bio: json['bio'] as String?,
-        darkmode: json['darkmode'] as bool,
-        workDomain: json['workDomain'] as String?,
-        picture: json['picture'] as String?,
-        favoriteCompanyIds: json['favroiteCompanies']
-            ?.map<String>((e) => e['_id'] as String)
-            ?.toList(),
-        favoriteNews: (json['favroiteNews'] as List?)
-            ?.map((e) => FavoriteNews.fromJson(e as Map<String, dynamic>))
-            .toList(),
-        interests: json['interests']?.cast<String>(),
-        employeeCompanyIds: json['employeeOf']
-            ?.map<String>((e) => e['_id'] as String)
-            ?.toList(),
-        connectionIds: json['connections']
-            ?.map<String>((e) => e['_id'] as String)
-            ?.toList(),
-      );
+      username: json['username'] as String,
+      email: json['email'] as String,
+      password: json['password'] as String,
+      bio: json['bio'] as String?,
+      darkmode: json['darkmode'] as bool,
+      workDomain: json['workDomain'] as String?,
+      picture: json['picture'] as String?,
+      favoriteCompanyIds: json['favroiteCompanies']
+          ?.map<String>((e) => e['_id'] as String)
+          ?.toList(),
+      favoriteNews: (json['favroiteNews'] as List?)
+          ?.map((e) => FavoriteNews.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      interests: json['interests']?.cast<String>(),
+      employeeCompanyIds:
+          json['employeeOf']?.map<String>((e) => e['_id'] as String)?.toList(),
+      connections: (json['connections'] as List?)
+          ?.map((e) => Connections.fromJson(e as Map<String, dynamic>))
+          .toList());
 
   Map<String, dynamic> toJson() => {
         'username': username,
@@ -87,7 +87,7 @@ class User {
         'favroiteNews': favoriteNews?.map((e) => e.toJson()).toList(),
         'interests': interests,
         'employeeOf': employeeCompanyIds?.map((id) => {'_id': id}).toList(),
-        'connections': connectionIds?.map((id) => {'_id': id}).toList(),
+        'connections': connections?.map((id) => {'_id': id}).toList(),
       };
 
   static User dummy = User(

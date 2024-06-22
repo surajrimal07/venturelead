@@ -52,7 +52,9 @@ dependencies:
   permission_handler: ^11.2.0
   font_awesome_flutter: ^10.7.0
   webview_flutter: ^3.0.4
-  url_launcher: ^6.1.12
+  url_launcher: ^6.3.0
+  html_editor_enhanced: ^2.6.0
+  share_plus: ^9.0.0
 
 dev_dependencies:
   flutter_test:
@@ -92,6 +94,8 @@ flutter:
     - assets/fonts/Poppins-SemiBoldItalic.ttf
     - assets/images/karkhana.png
     - assets/images/news.jpeg
+    - assets/images/nonotification.png
+    - assets/images/bookmark.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

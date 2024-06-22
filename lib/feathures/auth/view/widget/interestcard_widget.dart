@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:venturelead/feathures/auth/view/widget/interest_settings.dart';
 
 class InterestCard extends StatelessWidget {
   final List<String> interests;
 
   const InterestCard({super.key, required this.interests});
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -23,13 +23,13 @@ class InterestCard extends StatelessWidget {
                 const SizedBox(width: 190),
                 GestureDetector(
                   onTap: () {
-                    print('Customise clicked');
+                    showInterestCustomizeSetting(context);
                   },
                   child: const Align(
                     alignment: Alignment.topRight,
                     child: Text(
                       'Customise',
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(color: Colors.red),
                     ),
                   ),
                 )
@@ -48,8 +48,7 @@ class InterestCard extends StatelessWidget {
   Widget _buildEmptyInterestCard() {
     return Column(
       children: [
-        Image.asset('assets/images/news.jpeg', //empty assest
-            height: 100),
+        Image.asset('assets/images/news.jpeg', height: 100),
         const SizedBox(height: 16),
         const Text('No Interests found'),
         const SizedBox(height: 16),
@@ -81,6 +80,7 @@ class InterestItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String subtitle = _getSubtitle(interest);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -90,10 +90,31 @@ class InterestItem extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(
-          'Some description about the $interest.',
+          subtitle,
           style: const TextStyle(color: Colors.grey),
         ),
       ],
     );
+  }
+
+  String _getSubtitle(String interest) {
+    switch (interest) {
+      case 'Business and Tech News':
+        return 'Latest news about economy, finance, technology, etc.';
+      case 'Discover New Business':
+        return 'Companies developing innovative products and solutions';
+      case 'Ecosystem Insights':
+        return 'Key insights and trends in the business ecosystem';
+      case 'Event Announcements':
+        return 'Know about the latest tech and business events';
+      case 'Funding and Investments':
+        return 'Latest news about startup funding, deals, M&As, and exits';
+      case 'General News':
+        return 'All the latest news and headlines';
+      case 'Government Initiatives and Insights':
+        return 'Insights on government initiatives and policies';
+      default:
+        return 'Description not available';
+    }
   }
 }
