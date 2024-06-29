@@ -2,12 +2,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide MultipartFile, FormData;
 import 'package:venturelead/core/http/http_service.dart';
+import 'package:venturelead/core/toast.dart';
 import 'package:venturelead/core/utils/shared_prefs.dart';
 import 'package:venturelead/feathures/auth/controller/auth_controller.dart';
 import 'package:venturelead/feathures/auth/model/user_model.dart';
 import 'package:venturelead/feathures/auth/view/view/login_auth.dart';
 
-Future<bool> handleLoginController(String email, String password) async {
+Future<bool> handleLoginController(String email, String password,
+    {bool refresh = false}) async {
   try {
     final httpService = Get.find<HttpService>();
     final AuthController authController = Get.find<AuthController>();
@@ -31,13 +33,17 @@ Future<bool> handleLoginController(String email, String password) async {
 
       userPrefs.saveData<String>('bearertoken', response.data['token']);
 
-      Get.showSnackbar(const GetSnackBar(
-        title: 'Success',
-        message: 'Login successful',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        duration: Duration(seconds: 2),
-      ));
+      if (refresh) {
+        CustomToast.showToast('Refreshed successfully');
+      } else {
+        Get.showSnackbar(const GetSnackBar(
+          title: 'Success',
+          message: 'Login successful',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 1),
+        ));
+      }
 
       return true;
     } else {
@@ -318,7 +324,6 @@ Future<bool> handleUpdateController(FormData formData) async {
     );
 
     if (response.statusCode == 200) {
-      
       final user = User.fromJson(response.data['data']);
       authController.updateAuthState(authController.authState.value.copyWith(
         isLoading: false,

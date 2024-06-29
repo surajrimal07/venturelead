@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
 import 'package:venturelead/feathures/home/controller/companies_controller.dart';
+import 'package:venturelead/feathures/home/controller/network_controller.dart';
 import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
 class DashboardView extends StatelessWidget {
@@ -106,9 +107,6 @@ class DashboardView extends StatelessWidget {
 
                       companyController.setSelectedCompany(company);
 
-                      // companyController.companyState.value
-                      //     .copyWith(selectedCompany: company);
-
                       HomeController.to.selectedIndex.value = 7;
                     },
                     style: ElevatedButton.styleFrom(
@@ -132,65 +130,73 @@ class DashboardView extends StatelessWidget {
     }
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextField(
-                onTap: () {
-                  HomeController.to.selectedIndex.value = 6;
-                },
-                decoration: InputDecoration(
-                  hintText: 'Search news, companies here',
-                  suffixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide.none,
+      body: RefreshIndicator(
+        backgroundColor: Colors.white,
+        color: Colors.red,
+        onRefresh: () async {
+          await fetchCompanies();
+          await fetchAllCompanies();
+        },
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextField(
+                  onTap: () {
+                    HomeController.to.selectedIndex.value = 6;
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Search news, companies here',
+                    suffixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
                   ),
-                  filled: true,
-                  fillColor: Colors.grey[200],
                 ),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'Recently Added',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 17,
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextButton(
+                      onPressed: () {},
+                      child: const Text(
+                        'Recently Added',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 17,
+                        ),
                       ),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      HomeController.to.selectedIndex.value = 4;
-                    },
-                    child: const Text('Latest News',
-                        style: TextStyle(color: Colors.grey)),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      appBarController.showSearch.value = true;
-                      appBarController.showBack.value = true;
-                      appBarController.showBookmark.value = true;
+                    TextButton(
+                      onPressed: () {
+                        HomeController.to.selectedIndex.value = 4;
+                      },
+                      child: const Text('Latest News',
+                          style: TextStyle(color: Colors.grey)),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        appBarController.showSearch.value = true;
+                        appBarController.showBack.value = true;
+                        appBarController.showBookmark.value = true;
 
-                      HomeController.to.selectedIndex.value = 5;
-                    },
-                    child: const Text('For You',
-                        style: TextStyle(color: Colors.grey)),
-                  )
-                ],
-              ),
-              const SizedBox(height: 10),
-              for (var company in companies) buildCompanyCard(company),
-            ],
+                        HomeController.to.selectedIndex.value = 5;
+                      },
+                      child: const Text('For You',
+                          style: TextStyle(color: Colors.grey)),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 10),
+                for (var company in companies) buildCompanyCard(company),
+              ],
+            ),
           ),
         ),
       ),

@@ -39,6 +39,7 @@ class _SplashScreenState extends State<SplashScreen>
           bool isLoggedIn = await handleLoginController(email, password);
           if (isLoggedIn) {
             await fetchCompanies();
+            await fetchAllCompanies();
 
             Get.off(() => const HomeView());
           } else {

@@ -17,16 +17,17 @@ class WebViewPageState extends State<WebViewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        toolbarHeight: 50,
+        toolbarHeight: 32,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          iconSize: 25,
+          iconSize: 18,
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        title: Text(widget.name, style: const TextStyle(fontSize: 22)),
+        title: Text(widget.name, style: const TextStyle(fontSize: 16)),
       ),
       body: Stack(
         children: [
@@ -51,7 +52,7 @@ class WebViewPageState extends State<WebViewPage> {
           if (_isLoading)
             const Center(
                 child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+              color: Colors.white,
             )),
         ],
       ),

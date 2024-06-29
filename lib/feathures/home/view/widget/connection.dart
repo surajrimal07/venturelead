@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:venturelead/feathures/auth/controller/auth_controller.dart';
+import 'package:venturelead/feathures/auth/model/user_model.dart';
 import 'package:venturelead/feathures/home/controller/connection_controller.dart';
 import 'package:venturelead/feathures/home/view/widget/connection_message.dart';
 
@@ -10,6 +12,7 @@ class ConnectionModel extends StatelessWidget {
   Widget build(BuildContext context) {
     //final connectionController = Get.find<ConnectionController>();
     final connectionController = Get.put(ConnectionController());
+    final User user = Get.find<AuthController>().authState.value.authEntity;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -46,20 +49,26 @@ class ConnectionModel extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          _buildOption('Business Proposal', context, connectionController),
-          _buildOption('Interested in Product', context, connectionController),
-          _buildOption('Strategic Partnership', context, connectionController),
+          _buildOption(
+              'Business Proposal', context, connectionController, user.userid),
+          _buildOption('Interested in Product', context, connectionController,
+              user.userid),
+          _buildOption('Strategic Partnership', context, connectionController,
+              user.userid),
           _buildOption('Would like to work with the company', context,
-              connectionController),
-          _buildOption('Congratulate them', context, connectionController),
-          _buildOption('Anything Else', context, connectionController),
+              connectionController, user.userid),
+          _buildOption(
+              'Congratulate them', context, connectionController, user.userid),
+          _buildOption(
+              'Anything Else', context, connectionController, user.userid),
           const SizedBox(height: 16),
         ],
       ),
     );
   }
 
-  Widget _buildOption(String text, BuildContext context, connectionController) {
+  Widget _buildOption(
+      String text, BuildContext context, connectionController, userid) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
@@ -70,8 +79,8 @@ class ConnectionModel extends StatelessWidget {
         title: Text(text),
         trailing: const Icon(Icons.chevron_right, color: Colors.red),
         onTap: () {
-          // Navigator.of(context).pop();
-
+          connectionController.reason.value = text;
+          connectionController.userId.value = userid;
           connectionController.reason.value = text;
 
           Navigator.of(context).pop();

@@ -10,8 +10,8 @@ class ApiEndpoints {
   static const String PORT = ":5050";
 
   //localhost
-  static const String ADDRESS = "192.168.1.2";
-  static const String SERVER_ADDRESS = "$HTTPS$ADDRESS$PORT";
+  static const String SERVER_ADDRESS = "https://businessone.surajr.com.np";
+  // static const String SERVER_ADDRESS = "$HTTPS$ADDRESS$PORT";
 
   static const String LOGIN = "/login";
 }

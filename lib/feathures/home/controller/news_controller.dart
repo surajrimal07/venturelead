@@ -21,27 +21,19 @@ class NewsController extends GetxController {
     newsList.value = news;
   }
 
-  Future<void> fetchNews() async {
+  Future<void> fetchNews(String keyword) async {
     try {
       final httpService = Get.find<HttpService>();
       setLoading(true);
 
       final response = await httpService.dio
-          .get('https://api.zorsha.com.np/news?_page=1&limit=20');
+          .get('https://api.surajr.com.np/news?keyword=$keyword&limit=20');
 
       if (response.statusCode == 200) {
         List<News> news = (response.data as List)
             .map((newsJson) => News.fromJson(newsJson))
             .toList();
         setNewsList(news);
-
-        Get.showSnackbar(const GetSnackBar(
-          title: 'Success',
-          message: 'News fetched successfully',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 2),
-        ));
       } else {
         setError(response.data['message']);
         Get.showSnackbar(GetSnackBar(

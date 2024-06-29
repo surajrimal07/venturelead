@@ -10,7 +10,7 @@ class ContactUsScreen extends StatelessWidget {
     if (!await launchUrl(Uri(scheme: 'mailto'))) {
       Get.snackbar(
         'Error',
-        'Could not send email',
+        'Could not open email',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -89,10 +89,16 @@ class ContactUsScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildSocialIcon('instagram'),
-                _buildSocialIcon('telegram'),
-                _buildSocialIcon('facebook'),
-                _buildSocialIcon('whatsapp'),
+                _buildSocialIcon(FontAwesomeIcons.instagram,
+                    'https://www.instagram.com/venturelead/'),
+                _buildSocialIcon(
+                    FontAwesomeIcons.telegram, 'https://t.me/venturelead'),
+                _buildSocialIcon(FontAwesomeIcons.facebook,
+                    'https://www.facebook.com/venturelead/'),
+                _buildSocialIcon(
+                    FontAwesomeIcons.whatsapp, 'https://wa.me/1234567890'),
+                _buildSocialIcon(FontAwesomeIcons.twitter,
+                    'https://twitter.com/venturelead/')
               ],
             ),
           ],
@@ -140,23 +146,10 @@ class ContactUsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSocialIcon(String assetName) {
+  Widget _buildSocialIcon(IconData assetName, String url) {
     return GestureDetector(
       onTap: () {
-        switch (assetName) {
-          case 'instagram':
-            _launchUrl('https://instagram.com');
-            break;
-          case 'telegram':
-            _launchUrl('https://telegram.com');
-            break;
-          case 'facebook':
-            _launchUrl('https://facebook.com');
-            break;
-          case 'whatsapp':
-            _launchUrl('https://whatsapp.com');
-            break;
-        }
+        _launchUrl(url);
       },
       child: Container(
         padding: const EdgeInsets.all(12),
@@ -164,7 +157,7 @@ class ContactUsScreen extends StatelessWidget {
           border: Border.all(color: Colors.red),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: const FaIcon(FontAwesomeIcons.twitter, color: Colors.red),
+        child: FaIcon(assetName, color: Colors.red),
       ),
     );
   }

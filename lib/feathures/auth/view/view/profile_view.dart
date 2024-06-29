@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide MultipartFile, FormData;
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:venturelead/core/utils/shared_prefs.dart';
 import 'package:venturelead/feathures/auth/controller/auth_controller.dart';
 import 'package:venturelead/feathures/auth/controller/auth_network_controller.dart';
 import 'package:venturelead/feathures/auth/model/user_model.dart';
+import 'package:venturelead/feathures/auth/view/view/login_auth.dart';
 import 'package:venturelead/feathures/auth/view/widget/connection_widget.dart';
 import 'package:venturelead/feathures/auth/view/widget/interestcard_widget.dart';
 import 'package:venturelead/feathures/auth/view/widget/settings_widget.dart';
@@ -238,6 +240,7 @@ class _ProfilePageState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userPrefs = UserSharedPrefss();
     if (user.interests != null && user.interests!.isNotEmpty) {
       String interestString = user.interests![0];
       interestString = interestString.substring(1, interestString.length - 1);
@@ -263,153 +266,168 @@ class _ProfilePageState extends State<ProfileScreen> {
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              CircleAvatar(
-                  radius: 50, backgroundImage: NetworkImage(user.picture!)),
-              //const SizedBox(height: 10),
-              Text(
-                user.username,
-                style:
-                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 4),
-              Text(user.email),
-              const SizedBox(height: 4),
-              Text(
-                'Employee of ${user.employeeCompanyIds != null && user.employeeCompanyIds!.isNotEmpty ? user.employeeCompanyIds!.join(', ') : 'None'}',
-              ),
+        body: RefreshIndicator(
+          backgroundColor: Colors.white,
+          color: Colors.red,
+          onRefresh: () async {
+            final email = await userPrefs.getData<String>('email') ?? '';
+            final password = await userPrefs.getData<String>('password') ?? '';
 
-              const SizedBox(height: 5),
-              SizedBox(
-                height: 50,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            selectedTab = 'About';
-                          });
-                        },
-                        child: Text(
-                          'About',
-                          style: TextStyle(
-                            color: selectedTab == 'About'
-                                ? Colors.red
-                                : Colors.grey,
-                            fontWeight: selectedTab == 'About'
-                                ? FontWeight.bold
-                                : FontWeight.normal,
+            bool isLoggedIn =
+                await handleLoginController(email, password, refresh: true);
+            if (!isLoggedIn) {
+              Get.offAll(const LoginScreen());
+              userPrefs.saveData<bool>('isLoggedInSave', false);
+            }
+          },
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                CircleAvatar(
+                    radius: 50, backgroundImage: NetworkImage(user.picture!)),
+                //const SizedBox(height: 10),
+                Text(
+                  user.username,
+                  style: const TextStyle(
+                      fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
+                Text(user.email),
+                const SizedBox(height: 4),
+                Text(
+                  'Employee of ${user.employeeCompanyIds != null && user.employeeCompanyIds!.isNotEmpty ? user.employeeCompanyIds!.join(', ') : 'None'}',
+                ),
+
+                const SizedBox(height: 5),
+                SizedBox(
+                  height: 50,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              selectedTab = 'About';
+                            });
+                          },
+                          child: Text(
+                            'About',
+                            style: TextStyle(
+                              color: selectedTab == 'About'
+                                  ? Colors.red
+                                  : Colors.grey,
+                              fontWeight: selectedTab == 'About'
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 5),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            selectedTab = 'Interests';
-                          });
-                        },
-                        child: Text(
-                          'Interests',
-                          style: TextStyle(
-                            color: selectedTab == 'Interests'
-                                ? Colors.red
-                                : Colors.grey,
-                            fontWeight: selectedTab == 'Interests'
-                                ? FontWeight.bold
-                                : FontWeight.normal,
+                        const SizedBox(width: 5),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              selectedTab = 'Interests';
+                            });
+                          },
+                          child: Text(
+                            'Interests',
+                            style: TextStyle(
+                              color: selectedTab == 'Interests'
+                                  ? Colors.red
+                                  : Colors.grey,
+                              fontWeight: selectedTab == 'Interests'
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            selectedTab = 'Settings';
-                          });
-                        },
-                        child: Text(
-                          'Settings',
-                          style: TextStyle(
-                            color: selectedTab == 'Settings'
-                                ? Colors.red
-                                : Colors.grey,
-                            fontWeight: selectedTab == 'Settings'
-                                ? FontWeight.bold
-                                : FontWeight.normal,
+                        const SizedBox(width: 10),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              selectedTab = 'Settings';
+                            });
+                          },
+                          child: Text(
+                            'Settings',
+                            style: TextStyle(
+                              color: selectedTab == 'Settings'
+                                  ? Colors.red
+                                  : Colors.grey,
+                              fontWeight: selectedTab == 'Settings'
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            selectedTab = 'Connections';
-                          });
-                        },
-                        child: Text(
-                          'Connections',
-                          style: TextStyle(
-                            color: selectedTab == 'Connections'
-                                ? Colors.red
-                                : Colors.grey,
-                            fontWeight: selectedTab == 'Connections'
-                                ? FontWeight.bold
-                                : FontWeight.normal,
+                        const SizedBox(width: 10),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              selectedTab = 'Connections';
+                            });
+                          },
+                          child: Text(
+                            'Connections',
+                            style: TextStyle(
+                              color: selectedTab == 'Connections'
+                                  ? Colors.red
+                                  : Colors.grey,
+                              fontWeight: selectedTab == 'Connections'
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
                           ),
                         ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            selectedTab = 'Reviews';
-                          });
-                        },
-                        child: Text(
-                          'Reviews',
-                          style: TextStyle(
-                            color: selectedTab == 'Reviews'
-                                ? Colors.red
-                                : Colors.grey,
-                            fontWeight: selectedTab == 'Reviews'
-                                ? FontWeight.bold
-                                : FontWeight.normal,
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              selectedTab = 'Reviews';
+                            });
+                          },
+                          child: Text(
+                            'Reviews',
+                            style: TextStyle(
+                              color: selectedTab == 'Reviews'
+                                  ? Colors.red
+                                  : Colors.grey,
+                              fontWeight: selectedTab == 'Reviews'
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
                           ),
                         ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            selectedTab = 'Favorite Companies';
-                          });
-                        },
-                        child: Text(
-                          'Favorite Companies',
-                          style: TextStyle(
-                            color: selectedTab == 'Favorite Companies'
-                                ? Colors.red
-                                : Colors.grey,
-                            fontWeight: selectedTab == 'Favorite Companies'
-                                ? FontWeight.bold
-                                : FontWeight.normal,
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              selectedTab = 'Favorite Companies';
+                            });
+                          },
+                          child: Text(
+                            'Favorite Companies',
+                            style: TextStyle(
+                              color: selectedTab == 'Favorite Companies'
+                                  ? Colors.red
+                                  : Colors.grey,
+                              fontWeight: selectedTab == 'Favorite Companies'
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
                           ),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              if (selectedTab == 'About') AboutCard(user),
-              if (selectedTab == 'Interests')
-                InterestCard(interests: interestNames),
-              if (selectedTab == 'Settings') SettingsCard(),
-              if (selectedTab == 'Connections') ConnectionCard(user: user),
-            ],
+                if (selectedTab == 'About') AboutCard(user),
+                if (selectedTab == 'Interests')
+                  InterestCard(interests: interestNames),
+                if (selectedTab == 'Settings') SettingsCard(),
+                if (selectedTab == 'Connections') ConnectionCard(user: user),
+              ],
+            ),
           ),
         ),
         floatingActionButton: RawMaterialButton(

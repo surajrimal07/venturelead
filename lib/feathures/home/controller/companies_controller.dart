@@ -8,6 +8,14 @@ class CompanyController extends GetxController {
     companyState.value = newState;
   }
 
+  void updateAllCompanyState(dynamic newState) {
+    companyState.value = companyState.value.copyWith(allCompanies: newState);
+  }
+
+  void updateFeaturedCompanyState(dynamic newState) {
+    companyState.value = newState;
+  }
+
   void setLoading(bool isLoading) {
     companyState.value = companyState.value.copyWith(isLoading: isLoading);
   }
@@ -25,6 +33,11 @@ class CompanyController extends GetxController {
   }
 
   List<dynamic> get getCompanies => companyState.value.companies;
+
+  List<dynamic> get getAllCompanies => companyState.value.allCompanies;
+
+  List<dynamic> get getFeaturedCompanies =>
+      companyState.value.featuredCompanies;
 
   void setSelectedCompany(dynamic company) {
     companyState.value = companyState.value.copyWith(selectedCompany: company);

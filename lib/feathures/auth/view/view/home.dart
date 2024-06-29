@@ -38,7 +38,7 @@ class AuthHomeScreen extends StatelessWidget {
               const SizedBox(height: 30),
               ElevatedButton.icon(
                 onPressed: () {
-                  Get.to(() => LoginScreen());
+                  Get.to(() => const LoginScreen());
                   // Navigator.of(context).pushReplacement(
                   //   MaterialPageRoute(builder: (context) => LoginScreen()),
                   // );
@@ -62,7 +62,7 @@ class AuthHomeScreen extends StatelessWidget {
               const SizedBox(height: 10),
               OutlinedButton.icon(
                 onPressed: () {
-                  Get.off(() => LoginScreen());
+                  Get.off(() => const LoginScreen());
                 },
                 icon: const Icon(Icons.email_outlined),
                 label: const Text('Login with Email'),

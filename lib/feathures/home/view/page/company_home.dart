@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:venturelead/core/utils/customWebview.dart';
 import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
 import 'package:venturelead/feathures/home/controller/companies_controller.dart';
+import 'package:venturelead/feathures/home/controller/connection_controller.dart';
 import 'package:venturelead/feathures/home/view/widget/connection.dart';
 import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
@@ -11,8 +13,9 @@ class CompanyDetails extends StatelessWidget {
   CompanyDetails({super.key});
 
   final CompanyController companyController = Get.put(CompanyController());
-  static HomeController get to => Get.find();
+  static HomeController get to => Get.find<HomeController>();
   static AppBarController appBarController = Get.find<AppBarController>();
+  final connectionController = Get.put(ConnectionController());
 
   shortText(String text) {
     return text.substring(0, 30);
@@ -81,23 +84,33 @@ class CompanyDetails extends StatelessWidget {
   }
 
   Widget _buildRecentlyAddedCard(
-      String logo, String title, String description) {
+      dynamic company, appBarController, companyController) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              logo,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
+            GestureDetector(
+                onTap: () {
+                  appBarController.showSearch.value = true;
+                  appBarController.showBack.value = true;
+                  appBarController.showBookmark.value = true;
+                  appBarController.showShare.value = true;
+                  appBarController.showCustomText.value = true;
+                  appBarController.customText.value = company['name'];
+
+                  companyController.setSelectedCompany(company);
+                  HomeController.to.selectedIndex.value = 7;
+                },
+                child: Image.asset('assets/images/karkhana.png',
+                    width: 170, height: 90)),
             const SizedBox(height: 8),
-            Text(title,
+            Text(company['name'],
                 style:
                     const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 4),
-            Text(description,
+            Text(company['companyDescription'],
                 style: const TextStyle(fontSize: 12, color: Colors.grey)),
           ],
         ),
@@ -165,7 +178,9 @@ class CompanyDetails extends StatelessWidget {
           Expanded(
               child: GestureDetector(
             onTap: () {
-              _launchInBrowser(Uri.parse('https://www.linkedin.com'));
+              Get.to(const WebViewPage(
+                  name: 'Linkedin', url: 'https://www.linkedin.com'));
+              //_launchInBrowser(Uri.parse('https://www.linkedin.com'));
             },
             child: const FaIcon(FontAwesomeIcons.linkedin,
                 size: 18, color: Colors.blue),
@@ -178,6 +193,7 @@ class CompanyDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final company = companyController.getSelectedCompany;
+    final recentCompanies = companyController.getCompanies.take(5);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -234,7 +250,8 @@ class CompanyDetails extends StatelessWidget {
                     child: IconButton(
                         icon: const FaIcon(FontAwesomeIcons.globe),
                         onPressed: () {
-                          _launchUrl(company['website']);
+                          Get.to(WebViewPage(
+                              name: 'Website', url: company['website']));
                         }),
                   ),
                   Visibility(
@@ -242,7 +259,8 @@ class CompanyDetails extends StatelessWidget {
                     child: IconButton(
                         icon: const FaIcon(FontAwesomeIcons.facebook),
                         onPressed: () {
-                          _launchUrl(company['facebook']);
+                          Get.to(WebViewPage(
+                              name: 'Facebook', url: company['facebook']));
                         }),
                   ),
                   Visibility(
@@ -267,12 +285,15 @@ class CompanyDetails extends StatelessWidget {
                   IconButton(
                       icon: const FaIcon(FontAwesomeIcons.twitter),
                       onPressed: () {
-                        _launchUrl(company['twitter']);
+                        Get.to(WebViewPage(
+                            name: 'Facebook', url: company['twitter']));
                       }),
                   IconButton(
                     icon: const FaIcon(FontAwesomeIcons.googlePlay),
                     onPressed: () {
-                      _launchUrl(company['playStore'] ?? company['appStore']);
+                      Get.to(WebViewPage(
+                          name: 'Facebook',
+                          url: company['playStore'] ?? company['appStore']));
                     },
                   ),
                 ],
@@ -293,6 +314,7 @@ class CompanyDetails extends StatelessWidget {
                           BorderRadius.vertical(top: Radius.circular(20)),
                     ),
                     builder: (BuildContext context) {
+                      connectionController.companyId.value = company['_id'];
                       return const ConnectionModel();
                     },
                   );
@@ -415,16 +437,58 @@ class CompanyDetails extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Row(
-                children: [
-                  Expanded(
-                      child: _buildRecentlyAddedCard('NdS', 'Outside Studio',
-                          'An impact-driven design\n& technology studio')),
-                  const SizedBox(width: 16),
-                  Expanded(
-                      child: _buildRecentlyAddedCard('Δ', 'Delta Tech',
-                          'Sales tracking, field\nsales automation')),
-                ],
-              ),
+                children: recentCompanies.map((company) {
+                  return Expanded(
+                    child: Card(
+                      child: GestureDetector(
+                        onTap: () {
+                          appBarController.showSearch.value = true;
+                          appBarController.showBack.value = true;
+                          appBarController.showBookmark.value = true;
+                          appBarController.showShare.value = true;
+                          appBarController.showCustomText.value = true;
+                          appBarController.customText.value = company['name'];
+
+                          companyController.setSelectedCompany(company);
+                          HomeController.to.selectedIndex.value = 7;
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Image.asset('assets/images/karkhana.png',
+                                  width: 170, height: 90),
+                              const SizedBox(height: 8),
+                              Text(company['name'],
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold)),
+                              const SizedBox(height: 4),
+                              Text(company['companyDescription'],
+                                  style: const TextStyle(
+                                      fontSize: 12, color: Colors.grey)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              )
+              // Row(
+              //   children: [
+              //     Expanded(
+              //         child: _buildRecentlyAddedCard(
+              //             recentCompanies,
+              //             'Outside Studio',
+              //             'An impact-driven design\n& technology studio')),
+              //     const SizedBox(width: 16),
+              //     Expanded(
+              //         child: _buildRecentlyAddedCard('Δ', 'Delta Tech',
+              //             'Sales tracking, field\nsales automation')),
+              //   ],
+              // ),
             ],
           ),
         ),
@@ -438,6 +502,7 @@ class CompanyDetails extends StatelessWidget {
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
             builder: (BuildContext context) {
+              connectionController.companyId.value = company['_id'];
               return const ConnectionModel();
             },
           );

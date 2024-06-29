@@ -1,5 +1,6 @@
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:venturelead/feathures/home/model/connection_model.dart';
 
 class UserModelController extends GetxController {
@@ -13,6 +14,8 @@ class UserModelController extends GetxController {
 }
 
 class User {
+  @JsonKey(name: '_id')
+  final String userid;
   final String username;
   final String email;
   final String password;
@@ -20,7 +23,7 @@ class User {
   final bool darkmode;
   final String? workDomain;
   final String? picture;
-  
+
   final List<String>? favoriteCompanyIds;
   final List<FavoriteNews>? favoriteNews;
   final List<String>? interests;
@@ -28,6 +31,7 @@ class User {
   final List<Connections>? connections;
 
   User({
+    required this.userid,
     required this.username,
     required this.email,
     required this.password,
@@ -54,6 +58,7 @@ class User {
   }
 
   factory User.fromJson(Map<String, dynamic> json) => User(
+      userid: json['_id'] as String,
       username: json['username'] as String,
       email: json['email'] as String,
       password: json['password'] as String,
@@ -91,6 +96,7 @@ class User {
       };
 
   static User dummy = User(
+      userid: 'No User',
       username: 'No User',
       email: 'hello@nouser.com',
       password: '',

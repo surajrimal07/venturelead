@@ -16,6 +16,7 @@ import 'package:venturelead/feathures/home/view/page/faq_home.dart';
 import 'package:venturelead/feathures/home/view/page/foryou_news.home.dart';
 import 'package:venturelead/feathures/home/view/page/home.dart';
 import 'package:venturelead/feathures/home/view/page/latest_news_home.dart';
+import 'package:venturelead/feathures/home/view/page/news_search_result_home.dart';
 import 'package:venturelead/feathures/home/view/page/notification_home.dart';
 import 'package:venturelead/feathures/home/view/page/search_company.dart';
 
@@ -55,11 +56,13 @@ class HomeView extends StatelessWidget {
                   selectedIndex == 8 ||
                   selectedIndex == 9
               ? 0
-              : selectedIndex == 6 || selectedIndex == 7
-                  ? 2
-                  : selectedIndex == 10 || selectedIndex == 11
-                      ? 3
-                      : selectedIndex,
+              : selectedIndex == 12
+                  ? 1
+                  : selectedIndex == 6 || selectedIndex == 7
+                      ? 2
+                      : selectedIndex == 10 || selectedIndex == 11
+                          ? 3
+                          : selectedIndex,
           selectedItemColor: Colors.red,
           unselectedItemColor: Colors.grey,
           selectedColorOpacity: 0.8,
@@ -100,7 +103,9 @@ class HomeView extends StatelessWidget {
             ),
             SalomonBottomBarItem(
               icon: Icon(Icons.newspaper,
-                  color: selectedIndex == 1 ? Colors.white : Colors.grey),
+                  color: selectedIndex == 1 || selectedIndex == 12
+                      ? Colors.white
+                      : Colors.grey),
               title: const Text("News", style: TextStyle(color: Colors.white)),
             ),
             SalomonBottomBarItem(
@@ -137,21 +142,32 @@ class HomeView extends StatelessWidget {
 class HomeController extends GetxController {
   static HomeController get to => Get.find();
   var selectedIndex = 0.obs;
+  String keyword = 'business';
 
-  List<Widget> lstScreen = [
-    DashboardView(),
-    const BlogPage(),
-    CompanyPage(),
-    const ProfileScreen(),
-    const LatestNewsView(),
-    const ForYouPage(),
-    const HomeScreenSearch(),
-    CompanyDetails(),
-    const NotificationScreen(),
-    const BookmarkScreen(),
-    const FAQScreen(),
-    const ContactUsScreen(),
-  ];
+  late List<Widget> lstScreen;
+
+  HomeController() {
+    lstScreen = [
+      DashboardView(),
+      const BlogPage(),
+      CompanyPage(),
+      const ProfileScreen(),
+      const LatestNewsView(),
+      const ForYouPage(),
+      const HomeScreenSearch(),
+      CompanyDetails(),
+      const NotificationScreen(),
+      const BookmarkScreen(),
+      const FAQScreen(),
+      const ContactUsScreen(),
+      NewsSearchPage(keyword: keyword),
+    ];
+  }
+
+  void updateKeyword(String newKeyword) {
+    keyword = newKeyword;
+    lstScreen[12] = NewsSearchPage(keyword: keyword);
+  }
 }
 
 class AppBarWidget extends StatelessWidget {

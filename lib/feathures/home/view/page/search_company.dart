@@ -497,7 +497,10 @@ class _HomeScreenSearchState extends State<HomeScreenSearch> {
                           child: IconButton(
                             icon: const Icon(Icons.clear, color: Colors.white),
                             onPressed: () {
-                              searchTextController.clear();
+                              setState(() {
+                                isSearchVisible = false;
+                                searchTextController.clear();
+                              });
                             },
                           ),
                         ),

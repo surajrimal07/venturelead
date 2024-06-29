@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
 import 'package:venturelead/feathures/home/controller/companies_controller.dart';
+import 'package:venturelead/feathures/home/controller/network_controller.dart';
 import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
 class CompanyPage extends StatelessWidget {
@@ -24,134 +25,135 @@ class CompanyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final companies = companyController.getCompanies;
+    final companies = companyController.getAllCompanies;
 
     return Scaffold(
         backgroundColor: Colors.grey[200],
-        body: SingleChildScrollView(
-          controller: scrollController,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                color: Colors.blueGrey[700],
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Company Listing',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    RichText(
-                      text: const TextSpan(
-                        text: 'A List of Companies Curated By ',
+        body: RefreshIndicator(
+          backgroundColor: Colors.white,
+          color: Colors.red,
+          onRefresh: () async {
+            await fetchAllCompanies();
+          },
+          child: SingleChildScrollView(
+            controller: scrollController,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  color: Colors.blueGrey[700],
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 10),
+                      const Text(
+                        'Company Listing',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 16,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
                         ),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: 'Venture',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          TextSpan(
-                            text: 'Led',
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Container(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.white),
-                        ),
-                        child: Row(
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(
-                                Icons.search,
-                                color: Colors.white,
+                      const SizedBox(height: 8),
+                      RichText(
+                        text: const TextSpan(
+                          text: 'A List of Companies Curated By ',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: 'Venture',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: TextField(
-                                onTap: () =>
-                                    {HomeController.to.selectedIndex.value = 6},
-                                decoration: const InputDecoration(
-                                  hintText: 'Search Companies',
-                                  hintStyle: TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                  border: InputBorder.none,
-                                ),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                ),
+                            TextSpan(
+                              text: 'Led',
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            // IconButton(
-                            //   icon:
-                            //       const Icon(Icons.clear, color: Colors.white),
-                            //   onPressed: () {
-                            //     // Clear search field
-                            //   },
-                            // ),
                           ],
                         ),
                       ),
+                      const SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.white),
+                          ),
+                          child: Row(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(
+                                  Icons.search,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: TextField(
+                                  onTap: () => {
+                                    HomeController.to.selectedIndex.value = 6
+                                  },
+                                  decoration: const InputDecoration(
+                                    hintText: 'Search Companies',
+                                    hintStyle: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                    border: InputBorder.none,
+                                  ),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    'Featured',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  'Featured',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-              for (var company in companies)
-                GestureDetector(
-                  onTap: () {
-                    appBarController.showSearch.value = true;
-                    appBarController.showBack.value = true;
-                    appBarController.showBookmark.value = true;
-                    appBarController.showShare.value = true;
-                    appBarController.showCustomText.value = true;
-                    appBarController.customText.value = company['name'];
-                    companyController.setSelectedCompany(company);
-                    HomeController.to.selectedIndex.value = 7;
-                  },
-                  child: CompanyCard(
-                    logoUrl: 'assets/images/news.jpeg',
-                    name: company['name'],
-                    description: cleanDescription(company['contentData']),
-                    category: company['category'],
-                    location: company['address'],
-                    businessType: company['businesstype'],
+                for (var company in companies)
+                  GestureDetector(
+                    onTap: () {
+                      appBarController.showSearch.value = true;
+                      appBarController.showBack.value = true;
+                      appBarController.showBookmark.value = true;
+                      appBarController.showShare.value = true;
+                      appBarController.showCustomText.value = true;
+                      appBarController.customText.value = company['name'];
+                      companyController.setSelectedCompany(company);
+                      HomeController.to.selectedIndex.value = 7;
+                    },
+                    child: CompanyCard(
+                      logoUrl: 'assets/images/news.jpeg',
+                      name: company['name'],
+                      description: cleanDescription(company['contentData']),
+                      category: company['category'],
+                      location: company['address'],
+                      businessType: company['businesstype'],
+                    ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
         floatingActionButton: RawMaterialButton(

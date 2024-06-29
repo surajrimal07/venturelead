@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:venturelead/feathures/auth/controller/auth_controller.dart';
 import 'package:venturelead/feathures/auth/model/user_model.dart';
 import 'package:venturelead/feathures/home/controller/connection_controller.dart';
+import 'package:venturelead/feathures/home/controller/network_controller.dart';
 import 'package:venturelead/feathures/home/view/widget/connection_success.dart';
 
 class ConnectionMessage extends StatefulWidget {
@@ -19,7 +20,6 @@ class _ConnectionMessageState extends State<ConnectionMessage> {
   final TextEditingController linkedinController = TextEditingController();
   final User user = Get.find<AuthController>().authState.value.authEntity;
   final connectionController = Get.find<ConnectionController>();
-
   final _formKey = GlobalKey<FormState>();
 
   var wordCount = 0.obs;
@@ -144,33 +144,45 @@ class _ConnectionMessageState extends State<ConnectionMessage> {
     );
   }
 
-  void validateAndSubmit(
+  Future<void> validateAndSubmit(
       ConnectionController connectionController,
       subjectController,
       messageController,
       emailController,
-      linkedinController) {
+      linkedinController) async {
     if (_formKey.currentState!.validate()) {
-      // connectionController.sendMessage(
-      //     subjectController.text,
-      //     messageController.text,
-      //     emailController.text,
-      //     linkedinController.text);
+      var userid = connectionController.userId.value;
+      var companyid = connectionController.companyId.value;
+      var reason = connectionController.reason.value;
 
-      
+      connectionController.subject.value = subjectController.text;
+      connectionController.messgage.value = messageController.text;
+      connectionController.email.value = emailController.text;
+      connectionController.linkedinID.value = linkedinController.text;
 
-      Navigator.of(context).pop();
+      bool isSent = await handleConnection(
+          userid,
+          companyid,
+          reason,
+          subjectController.text,
+          messageController.text,
+          emailController.text,
+          linkedinController.text);
 
-      connectionController.clearFields();
+      if (isSent) {
+        Navigator.of(context).pop();
 
-      showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        builder: (BuildContext context) {
-          return ConnectionSuccess();
-        },
-      );
+        connectionController.clearFields();
+
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (BuildContext context) {
+            return ConnectionSuccess();
+          },
+        );
+      }
     }
     return;
   }
