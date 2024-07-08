@@ -47,7 +47,7 @@ class _BlogPageState extends State<BlogPage> {
                       child: TextField(
                         controller: searchTextController,
                         decoration: const InputDecoration(
-                          hintText: 'Search Companies',
+                          hintText: 'Search News, Blogs and Events.',
                           hintStyle: TextStyle(
                             color: Colors.grey,
                           ),

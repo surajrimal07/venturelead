@@ -1,5 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:venturelead/feathures/common/presentation/widget/privacy_common.dart';
+import 'package:venturelead/feathures/common/presentation/widget/terms_common.dart';
 import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
 import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
@@ -7,10 +10,10 @@ class FAQScreen extends StatefulWidget {
   const FAQScreen({super.key});
 
   @override
-  _FAQScreenState createState() => _FAQScreenState();
+  FAQScreenState createState() => FAQScreenState();
 }
 
-class _FAQScreenState extends State<FAQScreen> {
+class FAQScreenState extends State<FAQScreen> {
   final AppBarController appBarController = Get.put(AppBarController());
   int? expandedIndex;
 
@@ -65,9 +68,53 @@ class _FAQScreenState extends State<FAQScreen> {
                     'How to create a account?',
                     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse .......',
                     0),
-                _buildFAQItem('How can we change password?', '', 1),
-                _buildFAQItem('How to update company information?', '', 2),
-                _buildFAQItem('How to claim the company?', '', 3),
+                _buildFAQItem(
+                    'How can we change password?',
+                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse .....',
+                    1),
+                _buildFAQItem(
+                    'How to update company information?',
+                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse .....',
+                    2),
+                _buildFAQItem(
+                    'How to claim the company?',
+                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse .....',
+                    3),
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    text: 'By continuing you agree to our ',
+                    style: const TextStyle(color: Colors.black),
+                    children: [
+                      TextSpan(
+                        text: 'Terms of Service',
+                        style: const TextStyle(
+                            color: Colors.red, fontWeight: FontWeight.bold),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Get.to(const TermsOfService());
+                          },
+                      ),
+                      const TextSpan(
+                        text: ' and ',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      TextSpan(
+                        text: 'Privacy Policy',
+                        style: const TextStyle(
+                            color: Colors.red, fontWeight: FontWeight.bold),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Get.to(const PrivacyPolicy());
+                          },
+                      ),
+                      const TextSpan(
+                        text: '.',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

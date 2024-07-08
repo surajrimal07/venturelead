@@ -1,8 +1,11 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:venturelead/core/utils/shared_prefs.dart';
 import 'package:venturelead/feathures/auth/controller/auth_network_controller.dart';
 import 'package:venturelead/feathures/auth/view/view/login_auth.dart';
+import 'package:venturelead/feathures/common/presentation/widget/privacy_common.dart';
+import 'package:venturelead/feathures/common/presentation/widget/terms_common.dart';
 
 class SignupController extends GetxController {
   var isPasswordHidden = true.obs;
@@ -262,10 +265,40 @@ class _SignupViewState extends State<SignupView> {
                     ),
                   ],
                 ),
-                const Text(
-                  "By signing up for VentureLed you agree to the Terms of Service and Privacy Policy of the platform.",
+                RichText(
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                  text: TextSpan(
+                    text: 'By continuing you agree to our ',
+                    style: const TextStyle(color: Colors.black),
+                    children: [
+                      TextSpan(
+                        text: 'Terms of Service',
+                        style: const TextStyle(
+                            color: Colors.red, fontWeight: FontWeight.bold),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Get.to(const TermsOfService());
+                          },
+                      ),
+                      const TextSpan(
+                        text: ' and ',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      TextSpan(
+                        text: 'Privacy Policy',
+                        style: const TextStyle(
+                            color: Colors.red, fontWeight: FontWeight.bold),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Get.to(const PrivacyPolicy());
+                          },
+                      ),
+                      const TextSpan(
+                        text: '.',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
