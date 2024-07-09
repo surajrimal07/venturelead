@@ -38,7 +38,7 @@ class NewsSearchPage extends StatelessWidget {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      newsController.fetchNews(keyword);
+      newsController.searchNews(keyword);
     });
 
     return Scaffold(
@@ -46,7 +46,7 @@ class NewsSearchPage extends StatelessWidget {
         backgroundColor: Colors.white,
         color: Colors.red,
         onRefresh: () async {
-          newsController.fetchNews(keyword);
+          newsController.searchNews(keyword);
         },
         child: Obx(() {
           if (newsController.isLoading.value) {
@@ -54,7 +54,7 @@ class NewsSearchPage extends StatelessWidget {
                 child: CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
             ));
-          } else if (newsController.newsList.isEmpty) {
+          } else if (newsController.searchNewsList.isEmpty) {
             return Center(child: Text('No news found for $keyword'));
           } else {
             return ListView(
@@ -62,7 +62,7 @@ class NewsSearchPage extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               children: [
                 Column(
-                  children: newsController.newsList
+                  children: newsController.searchNewsList
                       .map((news) => newsCard(
                             news.title,
                             news.source,

@@ -182,3 +182,32 @@ Future<bool> handleConnection(
 
   return false;
 }
+
+Future<bool> handleCompanyClaim(FormData formData) async {
+  try {
+    final response =
+        await httpService.dio.post('/api/claim/company-claims', data: formData);
+
+    if (response.statusCode == 201) {
+      return true;
+    } else {
+      Get.showSnackbar(GetSnackBar(
+        title: 'Error',
+        message: response.data['message'],
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 2),
+      ));
+
+      return false;
+    }
+  } on DioException catch (e) {
+    Get.snackbar('Error', 'Update failed: $e',
+        snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+  } catch (e) {
+    Get.snackbar('Error', 'Update failed: $e',
+        snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+  }
+
+  return false;
+}

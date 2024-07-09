@@ -125,12 +125,24 @@ class _BlogPageState extends State<BlogPage> {
                 physics: const NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.all(16.0),
                 crossAxisSpacing: 12.0,
-                mainAxisSpacing: 10.0,
+                mainAxisSpacing: 5.0,
                 children: const [
-                  TopicCard(title: 'Latest', color: Colors.purple),
-                  TopicCard(title: 'Fintech', color: Colors.blueGrey),
-                  TopicCard(title: 'Innovation', color: Colors.green),
-                  TopicCard(title: 'Business', color: Colors.brown),
+                  TopicCard(
+                      title: 'Latest',
+                      color: Colors.purple,
+                      icon: Icon(Icons.new_releases, color: Colors.white)),
+                  TopicCard(
+                      title: 'Fintech',
+                      color: Colors.blueGrey,
+                      icon: Icon(Icons.money, color: Colors.white)),
+                  TopicCard(
+                      title: 'Innovation',
+                      color: Colors.green,
+                      icon: Icon(Icons.science, color: Colors.white)),
+                  TopicCard(
+                      title: 'Business',
+                      color: Colors.brown,
+                      icon: Icon(Icons.business, color: Colors.white)),
                 ],
               ),
             ),
@@ -177,11 +189,13 @@ class _BlogPageState extends State<BlogPage> {
 class TopicCard extends StatelessWidget {
   final String title;
   final Color color;
+  final Icon icon;
 
   const TopicCard({
     super.key,
     required this.title,
     required this.color,
+    required this.icon,
   });
 
   @override
@@ -206,14 +220,21 @@ class TopicCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: Center(
-          child: Text(
-            title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              icon,
+              const SizedBox(height: 8.0),
+              Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
       ),

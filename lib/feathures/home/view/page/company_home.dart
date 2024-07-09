@@ -6,6 +6,7 @@ import 'package:venturelead/core/utils/customWebview.dart';
 import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
 import 'package:venturelead/feathures/home/controller/companies_controller.dart';
 import 'package:venturelead/feathures/home/controller/connection_controller.dart';
+import 'package:venturelead/feathures/home/view/widget/claim_modal.dart';
 import 'package:venturelead/feathures/home/view/widget/connection.dart';
 import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
@@ -299,27 +300,48 @@ class CompanyDetails extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.red,
-                  backgroundColor: Colors.white,
-                  side: const BorderSide(color: Colors.red),
-                ),
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(20)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.values[5],
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.red,
+                      backgroundColor: Colors.white,
+                      side: const BorderSide(color: Colors.red),
                     ),
-                    builder: (BuildContext context) {
-                      connectionController.companyId.value = company['_id'];
-                      return const ConnectionModel();
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(20)),
+                        ),
+                        builder: (BuildContext context) {
+                          connectionController.companyId.value = company['_id'];
+                          return const ConnectionModel();
+                        },
+                      );
                     },
-                  );
-                },
-                child: const Text('CONNECT'),
+                    child: const Text('CONNECT'),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.red,
+                      backgroundColor: Colors.white,
+                      side: const BorderSide(color: Colors.red),
+                    ),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const ClaimModal();
+                        },
+                      );
+                    },
+                    child: const Text('CLAIM'),
+                  )
+                ],
               ),
               const SizedBox(height: 10),
               const Text(

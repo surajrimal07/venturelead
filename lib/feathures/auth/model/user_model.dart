@@ -18,7 +18,6 @@ class User {
   final String userid;
   final String username;
   final String email;
-  final String password;
   final String? bio;
   final bool darkmode;
   final String? workDomain;
@@ -34,7 +33,6 @@ class User {
     required this.userid,
     required this.username,
     required this.email,
-    required this.password,
     this.bio,
     this.darkmode = false,
     String? picture,
@@ -61,7 +59,6 @@ class User {
       userid: json['_id'] as String,
       username: json['username'] as String,
       email: json['email'] as String,
-      password: json['password'] as String,
       bio: json['bio'] as String?,
       darkmode: json['darkmode'] as bool,
       workDomain: json['workDomain'] as String?,
@@ -82,7 +79,6 @@ class User {
   Map<String, dynamic> toJson() => {
         'username': username,
         'email': email,
-        'password': password,
         'bio': bio,
         'darkmode': darkmode,
         'workDomain': workDomain,
@@ -99,7 +95,6 @@ class User {
       userid: 'No User',
       username: 'No User',
       email: 'hello@nouser.com',
-      password: '',
       darkmode: false);
 }
 

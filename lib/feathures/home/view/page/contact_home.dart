@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:venturelead/feathures/home/view/widget/contactus_modal.dart';
 
 class ContactUsScreen extends StatelessWidget {
   const ContactUsScreen({super.key});
@@ -142,6 +143,21 @@ class ContactUsScreen extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return const ContactUsModal();
+            },
+          );
+        },
+        backgroundColor: const Color.fromARGB(255, 216, 106, 98),
+        child: const Icon(
+          Icons.contact_page,
+          color: Colors.white,
         ),
       ),
     );

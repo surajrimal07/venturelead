@@ -6,6 +6,7 @@ import 'package:venturelead/feathures/home/model/news_model.dart';
 
 class NewsController extends GetxController {
   var newsList = <News>[].obs;
+  var searchNewsList = <News>[].obs;
   var isLoading = false.obs;
   var errorMessage = ''.obs;
 
@@ -21,6 +22,10 @@ class NewsController extends GetxController {
     newsList.value = news;
   }
 
+  void setSearchNewsList(List<News> news) {
+    searchNewsList.value = news;
+  }
+
   Future<void> fetchNews(String keyword) async {
     try {
       final httpService = Get.find<HttpService>();
@@ -34,6 +39,44 @@ class NewsController extends GetxController {
             .map((newsJson) => News.fromJson(newsJson))
             .toList();
         setNewsList(news);
+      } else {
+        setError(response.data['message']);
+        Get.showSnackbar(GetSnackBar(
+          title: 'Error',
+          message: response.data['message'],
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 2),
+        ));
+      }
+    } on DioException catch (e) {
+      debugPrint('Failed to fetch news: $e');
+      setError('Failed to fetch news: $e');
+      Get.snackbar('Error', 'Failed to fetch news: $e',
+          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+    } catch (e) {
+      debugPrint('Failed to fetch news: $e');
+      setError('Failed to fetch news: $e');
+      Get.snackbar('Error', 'Failed to fetch news: $e',
+          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  Future<void> searchNews(String keyword) async {
+    try {
+      final httpService = Get.find<HttpService>();
+      setLoading(true);
+
+      final response = await httpService.dio
+          .get('https://api.surajr.com.np/news?keyword=$keyword&limit=20');
+
+      if (response.statusCode == 200) {
+        List<News> news = (response.data as List)
+            .map((newsJson) => News.fromJson(newsJson))
+            .toList();
+        setSearchNewsList(news);
       } else {
         setError(response.data['message']);
         Get.showSnackbar(GetSnackBar(

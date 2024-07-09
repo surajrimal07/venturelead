@@ -5,6 +5,7 @@ class CompaniesState {
   final List<dynamic> companies;
   final List<dynamic> allCompanies;
   final List<dynamic> featuredCompanies;
+  final List<dynamic> filteredCompanies = [];
 
   final dynamic selectedCompany;
 

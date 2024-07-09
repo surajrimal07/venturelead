@@ -302,6 +302,12 @@ import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
 import 'package:venturelead/feathures/home/controller/companies_controller.dart';
 import 'package:venturelead/feathures/home/view/page/companies_home.dart';
 import 'package:venturelead/feathures/home/view/widget/navigation.dart';
+import 'package:venturelead/feathures/home/view/widget/search_modal.dart';
+
+class FilteredCompanies extends GetxController {
+  
+}
+
 
 class HomeScreenSearch extends StatefulWidget {
   const HomeScreenSearch({super.key});
@@ -337,7 +343,6 @@ List<dynamic> searchCompanies(List<dynamic> companies, String searchText) {
       }
     }
 
-    // Check main fields
     checkField(company['name']);
     checkField(company['address']);
     checkField(company['email']);
@@ -352,7 +357,6 @@ List<dynamic> searchCompanies(List<dynamic> companies, String searchText) {
     checkField(company['businesstype']);
     checkField(company['revenueStream']);
 
-    // Check nested fields
     if (company['products'] is List) {
       for (var product in company['products']) {
         checkField(product['name']);
@@ -550,7 +554,16 @@ class _HomeScreenSearchState extends State<HomeScreenSearch> {
                 Center(
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      // Filter button pressed
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (BuildContext context) {
+                          return FractionallySizedBox(
+                            heightFactor: 0.9,
+                            child: SearchFilterModal(),
+                          );
+                        },
+                      );
                     },
                     icon: const Icon(Icons.filter_list),
                     label: const Text('Filters'),

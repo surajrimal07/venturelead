@@ -10,7 +10,6 @@ class ConnectionModel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //final connectionController = Get.find<ConnectionController>();
     final connectionController = Get.put(ConnectionController());
     final User user = Get.find<AuthController>().authState.value.authEntity;
 
