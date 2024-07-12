@@ -162,7 +162,7 @@ class HomeController extends GetxController {
       const ForYouPage(),
       const HomeScreenSearch(),
       CompanyDetails(),
-      const NotificationScreen(),
+      NotificationScreen(),
       BookmarkScreen(),
       const FAQScreen(),
       const ContactUsScreen(),
@@ -185,16 +185,6 @@ class AppBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //final newfavcompanyId = companyController.getSelectedCompany;
-
-    //bool isThisCompanyFav = false;
-    //List<String>? favoriteCompanies = user.favoriteCompanyIds ?? [];
-
-    // if (newfavcompanyId != null &&
-    //     favoriteCompanies.contains(newfavcompanyId['_id'])) {
-    //   isThisCompanyFav = true;
-    // }
-
     return Obx(() {
       final showBack = appBarController.showBack.value;
       final showBookmark = appBarController.showBookmark.value;
@@ -208,11 +198,12 @@ class AppBarWidget extends StatelessWidget {
       bool centerTitle = showCustomText ? false : true;
 
       return AppBar(
-        backgroundColor: Colors.white,
+        //backgroundColor: Colors.white,
         elevation: 0,
         leading: showBack
             ? IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.black),
+                icon: Icon(Icons.arrow_back,
+                    color: Get.isDarkMode ? Colors.white : Colors.black),
                 onPressed: () {
                   appBarController.bookmarkType.value = 'news';
                   appBarController.showBack.value = false;
@@ -241,13 +232,15 @@ class AppBarWidget extends StatelessWidget {
           child: showCustomText
               ? Text(
                   customText,
-                  style: const TextStyle(color: Colors.black),
+                  style: TextStyle(
+                      color: Get.isDarkMode ? Colors.white : Colors.black),
                 )
-              : const Text.rich(
+              : Text.rich(
                   TextSpan(
                     text: 'VENTURE',
-                    style: TextStyle(color: Colors.black),
-                    children: <TextSpan>[
+                    style: TextStyle(
+                        color: Get.isDarkMode ? Colors.white : Colors.black),
+                    children: const <TextSpan>[
                       TextSpan(
                         text: 'LED',
                         style: TextStyle(

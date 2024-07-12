@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:venturelead/feathures/auth/view/widget/settings_widget.dart';
 
 class NotificationScreen extends StatelessWidget {
-  const NotificationScreen({super.key});
+  NotificationScreen({super.key});
+
+  final settingController = Get.put(SettingsController());
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +20,12 @@ class NotificationScreen extends StatelessWidget {
               height: 200,
             ),
             const SizedBox(height: 15),
-            const Text(
-              '         No notifications',
-              style: TextStyle(fontSize: 18),
-            ),
+            Obx(() => Text(
+                  settingController.isNotificationOn.value
+                      ? '        No notifications'
+                      : 'Notifications are off, turn on to receive notifications',
+                  style: const TextStyle(fontSize: 18),
+                )),
           ],
         ),
       ),

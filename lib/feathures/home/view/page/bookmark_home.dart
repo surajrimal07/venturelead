@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide MultipartFile, FormData;
+import 'package:venturelead/core/utils/customWebview.dart';
 import 'package:venturelead/feathures/auth/controller/auth_controller.dart';
 import 'package:venturelead/feathures/auth/controller/auth_network_controller.dart';
 import 'package:venturelead/feathures/auth/model/user_model.dart';
@@ -43,46 +44,29 @@ class BookmarkScreen extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Bookmarks',
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.normal),
-                      ),
-                      Text(
-                        "Don't miss on your favorites",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                ),
                 Expanded(
                   child: ListView(
                     children: [
                       _buildBookmarkItem(
-                        'assets/images/news.jpeg',
-                        'The Game called Entrepreneurship for Startup Enthusiasts',
-                        'August 02, 2020',
-                      ),
+                          'assets/images/news.jpeg',
+                          'The Game called Entrepreneurship for Startup Enthusiasts',
+                          'August 02, 2020',
+                          'https://www.sharesansar.com/newsdetail/gold-prices-surge-by-rs-1000-silver-follows-suit-with-rs-10-increase-2024-06-28'),
                       _buildBookmarkItem(
-                        'assets/images/news.jpeg',
-                        'List of Mobile App Performance Metrics to Gauge the Success of App',
-                        'October 18, 2019',
-                      ),
+                          'assets/images/news.jpeg',
+                          'List of Mobile App Performance Metrics to Gauge the Success of App',
+                          'October 18, 2019',
+                          'https://www.sharesansar.com/newsdetail/gold-prices-surge-by-rs-1000-silver-follows-suit-with-rs-10-increase-2024-06-28'),
                       _buildBookmarkItem(
-                        'assets/images/news.jpeg',
-                        'What are the latest artificial intelligence trends?',
-                        'June 10, 2020',
-                      ),
+                          'assets/images/news.jpeg',
+                          'What are the latest artificial intelligence trends?',
+                          'June 10, 2020',
+                          'https://www.sharesansar.com/newsdetail/gold-prices-surge-by-rs-1000-silver-follows-suit-with-rs-10-increase-2024-06-28'),
                       _buildBookmarkItem(
-                        'assets/images/news.jpeg',
-                        "'Failure is there to teach you something' - 40 quotes from business journeys",
-                        'May 05, 2020',
-                      ),
+                          'assets/images/news.jpeg',
+                          "'Failure is there to teach you something' - 40 quotes from business journeys",
+                          'May 05, 2020',
+                          'https://www.sharesansar.com/newsdetail/gold-prices-surge-by-rs-1000-silver-follows-suit-with-rs-10-increase-2024-06-28'),
                     ],
                   ),
                 ),
@@ -105,7 +89,8 @@ class BookmarkScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBookmarkItem(String imagePath, String title, String date) {
+  Widget _buildBookmarkItem(
+      String imagePath, String title, String date, String url) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Row(
@@ -121,22 +106,38 @@ class BookmarkScreen extends StatelessWidget {
           ),
           const SizedBox(width: 20),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  date,
-                  style: const TextStyle(color: Colors.grey),
-                ),
-              ],
+            child: GestureDetector(
+              onTap: () {
+                Get.to(WebViewPage(name: 'News', url: url));
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    date,
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                ],
+              ),
             ),
           ),
-          const Icon(Icons.bookmark, color: Colors.black),
+          GestureDetector(
+            onTap: () {
+              Get.snackbar(
+                'Bookmark Removed',
+                'Bookmark removed successfully.',
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: Colors.red,
+                colorText: Colors.white,
+              );
+            },
+            child: const Icon(Icons.bookmark, color: Colors.black),
+          ),
         ],
       ),
     );
@@ -182,16 +183,26 @@ class BookmarkScreen extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.bookmark_remove, color: Colors.red),
               onPressed: () async {
-                List<String> favoriteCompanies = user.favoriteCompanyIds ?? [];
+                // List<String> favoriteCompanies = user.favoriteCompanyIds ?? [];
+                List<String> updatedFavoriteCompanies =
+                    List.from(user.favoriteCompanyIds ?? []);
 
-                if (favoriteCompanies.contains(company['_id'])) {
-                  favoriteCompanies.remove(company['_id']);
+                if (updatedFavoriteCompanies.contains(company['_id'])) {
+                  updatedFavoriteCompanies.remove(company['_id']);
+                }
+
+                if (updatedFavoriteCompanies.isEmpty) {
+                  updatedFavoriteCompanies = [];
                 }
 
                 FormData formData = FormData.fromMap({
                   'email': user.email,
-                  'favoriteCompanies': favoriteCompanies,
+                  'favoriteCompanies': updatedFavoriteCompanies.isEmpty
+                      ? []
+                      : updatedFavoriteCompanies,
                 });
+
+                print(formData.fields);
 
                 bool updateProfile = await handleUpdateController(formData);
 

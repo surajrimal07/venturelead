@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:venturelead/core/utils/shared_prefs.dart';
 
 class ThemeController extends GetxController {
   final _isDarkMode = false.obs;
+  final userPrefs = UserSharedPrefss();
+
+  @override
+  void onInit() async {
+    super.onInit();
+    _isDarkMode.value = await userPrefs.getData<bool>('dakmode') ?? false;
+    update();
+  }
 
   bool get isDarkMode => _isDarkMode.value;
 
@@ -25,7 +34,6 @@ class AppColors {
   static const Color greenColor = Color.fromARGB(255, 123, 228, 126);
   static const Color greyPrimaryColor = Color.fromRGBO(28, 27, 32, 1.0);
 
-  //for dark mode
   static const Color darkPrimaryColor = Color(0xFF6750A4);
   static const Color darkbackgroundColor = Color(0xFF000000);
   static const Color darktextColor = Colors.white;

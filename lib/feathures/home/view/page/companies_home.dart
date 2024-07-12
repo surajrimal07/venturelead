@@ -28,7 +28,7 @@ class CompanyPage extends StatelessWidget {
     final companies = companyController.getAllCompanies;
 
     return Scaffold(
-        backgroundColor: Colors.grey[200],
+        backgroundColor: Get.isDarkMode ? Colors.black : Colors.grey[200],
         body: RefreshIndicator(
           backgroundColor: Colors.white,
           color: Colors.red,
@@ -191,6 +191,7 @@ class CompanyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Get.isDarkMode ? Colors.grey[900] : Colors.white,
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -218,7 +219,8 @@ class CompanyCard extends StatelessWidget {
                       Text(
                         businessType,
                         style: TextStyle(
-                          color: Colors.grey[600],
+                          color:
+                              Get.isDarkMode ? Colors.white : Colors.grey[600],
                           fontSize: 12,
                         ),
                       ),
@@ -228,31 +230,41 @@ class CompanyCard extends StatelessWidget {
                   Text(
                     description,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey[700],
+                          color:
+                              Get.isDarkMode ? Colors.white : Colors.grey[700],
                         ),
                   ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      Icon(Icons.label, color: Colors.grey[600], size: 16),
+                      Icon(Icons.label,
+                          color:
+                              Get.isDarkMode ? Colors.white : Colors.grey[600],
+                          size: 16),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
                           category,
                           style:
                               Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: Colors.grey[700],
+                                    color: Get.isDarkMode
+                                        ? Colors.white
+                                        : Colors.grey[700],
                                   ),
                         ),
                       ),
                       const SizedBox(width: 16),
                       Icon(Icons.location_on,
-                          color: Colors.grey[600], size: 16),
+                          color:
+                              Get.isDarkMode ? Colors.white : Colors.grey[600],
+                          size: 16),
                       const SizedBox(width: 4),
                       Text(
                         location,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.grey[700],
+                              color: Get.isDarkMode
+                                  ? Colors.white
+                                  : Colors.grey[700],
                             ),
                       ),
                     ],

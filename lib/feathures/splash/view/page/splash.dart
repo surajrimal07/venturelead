@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:venturelead/core/utils/shared_prefs.dart';
-import 'package:venturelead/core/utils/string_utils.dart';
 import 'package:venturelead/feathures/auth/controller/auth_network_controller.dart';
 import 'package:venturelead/feathures/auth/view/view/login_auth.dart';
 import 'package:venturelead/feathures/home/controller/network_controller.dart';
@@ -87,13 +86,9 @@ class _SplashScreenState extends State<SplashScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              AppStrings.appName,
-              style: TextStyle(
-                fontSize: 24,
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
-              ),
+            Image.asset(
+              'assets/images/logo.png',
+              height: 200,
             ),
             const SizedBox(height: 10),
             const Text(

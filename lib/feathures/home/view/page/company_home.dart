@@ -70,55 +70,55 @@ class CompanyDetails extends StatelessWidget {
     );
   }
 
-  Future<void> _launchInBrowser(Uri url) async {
-    if (!await launchUrl(
-      url,
-      mode: LaunchMode.externalApplication,
-    )) {
-      Get.snackbar(
-        'Error',
-        'Could not launch $url in browser',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    }
-  }
+  // Future<void> _launchInBrowser(Uri url) async {
+  //   if (!await launchUrl(
+  //     url,
+  //     mode: LaunchMode.externalApplication,
+  //   )) {
+  //     Get.snackbar(
+  //       'Error',
+  //       'Could not launch $url in browser',
+  //       snackPosition: SnackPosition.BOTTOM,
+  //       backgroundColor: Colors.red,
+  //       colorText: Colors.white,
+  //     );
+  //   }
+  // }
 
-  Widget _buildRecentlyAddedCard(
-      dynamic company, appBarController, companyController) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-                onTap: () {
-                  appBarController.showSearch.value = true;
-                  appBarController.showBack.value = true;
-                  appBarController.showBookmark.value = true;
-                  appBarController.showShare.value = true;
-                  appBarController.showCustomText.value = true;
-                  appBarController.customText.value = company['name'];
+  // Widget _buildRecentlyAddedCard(
+  //     dynamic company, appBarController, companyController) {
+  //   return Card(
+  //     child: Padding(
+  //       padding: const EdgeInsets.all(16),
+  //       child: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           GestureDetector(
+  //               onTap: () {
+  //                 appBarController.showSearch.value = true;
+  //                 appBarController.showBack.value = true;
+  //                 appBarController.showBookmark.value = true;
+  //                 appBarController.showShare.value = true;
+  //                 appBarController.showCustomText.value = true;
+  //                 appBarController.customText.value = company['name'];
 
-                  companyController.setSelectedCompany(company);
-                  HomeController.to.selectedIndex.value = 7;
-                },
-                child: Image.asset('assets/images/karkhana.png',
-                    width: 170, height: 90)),
-            const SizedBox(height: 8),
-            Text(company['name'],
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 4),
-            Text(company['companyDescription'],
-                style: const TextStyle(fontSize: 12, color: Colors.grey)),
-          ],
-        ),
-      ),
-    );
-  }
+  //                 companyController.setSelectedCompany(company);
+  //                 HomeController.to.selectedIndex.value = 7;
+  //               },
+  //               child: Image.asset('assets/images/karkhana.png',
+  //                   width: 170, height: 90)),
+  //           const SizedBox(height: 8),
+  //           Text(company['name'],
+  //               style:
+  //                   const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+  //           const SizedBox(height: 4),
+  //           Text(company['companyDescription'],
+  //               style: const TextStyle(fontSize: 12, color: Colors.grey)),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Future<void> _makePhoneCall(String phoneNumber) async {
     final Uri launchUri = Uri(
@@ -139,13 +139,13 @@ class CompanyDetails extends StatelessWidget {
     }
   }
 
-  Future<void> _launchUrl(String url) async {
-    final Uri launchUri = Uri(
-      scheme: 'https',
-      path: url,
-    );
-    await launchUrl(launchUri);
-  }
+  // Future<void> _launchUrl(String url) async {
+  //   final Uri launchUri = Uri(
+  //     scheme: 'https',
+  //     path: url,
+  //   );
+  //   await launchUrl(launchUri);
+  // }
 
   Widget _buildInfoRow(String label, String value) {
     return Padding(

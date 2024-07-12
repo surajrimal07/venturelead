@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:venturelead/core/utils/shared_prefs.dart';
 import 'package:venturelead/feathures/auth/view/widget/logout_dialog.dart';
 
 class SettingsController extends GetxController {
+  final userPrefs = UserSharedPrefss();
+
   var isNotificationOn = false.obs;
   var isDarkModeOn = false.obs;
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-    isDarkModeOn.value = Get.isDarkMode;
+    isDarkModeOn.value = await userPrefs.getData<bool>('dakmode') ?? false;
+    update();
   }
 
   void toggleNotification() {
@@ -27,6 +31,9 @@ class SettingsController extends GetxController {
     if (Get.isDarkMode) {
       Get.changeTheme(ThemeData.light());
       isDarkModeOn.value = false;
+
+      userPrefs.saveData<bool>('dakmode', false);
+
       Get.showSnackbar(
         const GetSnackBar(
           title: 'Info',
@@ -36,9 +43,12 @@ class SettingsController extends GetxController {
           duration: Duration(seconds: 1),
         ),
       );
+
+      update();
     } else {
       Get.changeTheme(ThemeData.dark());
       isDarkModeOn.value = true;
+      userPrefs.saveData<bool>('dakmode', true);
       Get.showSnackbar(
         const GetSnackBar(
           title: 'Info',
@@ -48,6 +58,7 @@ class SettingsController extends GetxController {
           duration: Duration(seconds: 1),
         ),
       );
+      update();
     }
   }
 }
@@ -76,7 +87,6 @@ class SettingsCard extends StatelessWidget {
                 title: const Text('Notifications'),
                 value: controller.isNotificationOn.value,
                 onChanged: (value) => controller.toggleNotification(),
-                activeTrackColor: Colors.redAccent,
                 activeColor: Colors.red,
               ),
             ),
@@ -85,7 +95,6 @@ class SettingsCard extends StatelessWidget {
                 title: const Text('Dark Mode'),
                 value: controller.isDarkModeOn.value,
                 onChanged: (value) => controller.toggleDarkMode(),
-                activeTrackColor: Colors.redAccent,
                 activeColor: Colors.red,
               ),
             ),

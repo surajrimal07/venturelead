@@ -329,15 +329,6 @@ Future<bool> handleUpdateController(FormData formData) async {
         isLoading: false,
         authEntity: user,
       ));
-
-      // Get.showSnackbar(const GetSnackBar(
-      //   title: 'Success',
-      //   message: 'Your profile is updated successfully.',
-      //   snackPosition: SnackPosition.BOTTOM,
-      //   backgroundColor: Colors.green,
-      //   duration: Duration(seconds: 1),
-      // ));
-
       return true;
     } else {
       authController.updateAuthState(authController.authState.value.copyWith(

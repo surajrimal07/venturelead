@@ -157,7 +157,8 @@ class DashboardView extends StatelessWidget {
                       HomeController.to.selectedIndex.value = 7;
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
+                      backgroundColor:
+                          Get.isDarkMode ? Colors.grey[300] : Colors.white,
                       side: const BorderSide(color: Colors.red),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
@@ -202,7 +203,7 @@ class DashboardView extends StatelessWidget {
                       borderSide: BorderSide.none,
                     ),
                     filled: true,
-                    fillColor: Colors.grey[200],
+                    fillColor: Get.isDarkMode ? Colors.grey : Colors.grey[200],
                   ),
                 ),
                 const SizedBox(height: 10),

@@ -21,7 +21,7 @@ class _BlogPageState extends State<BlogPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: Get.isDarkMode ? Colors.black : Colors.grey[200],
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,7 +107,7 @@ class _BlogPageState extends State<BlogPage> {
               ),
             ),
             const Padding(
-              padding: EdgeInsets.all(10.0),
+              padding: EdgeInsets.all(5.0),
               child: Text(
                 'Suggested Topics',
                 style: TextStyle(
@@ -117,13 +117,13 @@ class _BlogPageState extends State<BlogPage> {
               ),
             ),
             SizedBox(
-              width: 700,
-              height: 110,
+              width: 433,
+              height: 80,
               child: GridView.count(
-                crossAxisCount: 4,
+                crossAxisCount: 5,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(4.0),
                 crossAxisSpacing: 12.0,
                 mainAxisSpacing: 5.0,
                 children: const [
@@ -143,11 +143,15 @@ class _BlogPageState extends State<BlogPage> {
                       title: 'Business',
                       color: Colors.brown,
                       icon: Icon(Icons.business, color: Colors.white)),
+                  TopicCard(
+                      title: 'Nepal',
+                      color: Colors.brown,
+                      icon: Icon(Icons.local_atm, color: Colors.white)),
                 ],
               ),
             ),
             const Padding(
-              padding: EdgeInsets.all(10.0),
+              padding: EdgeInsets.all(5.0),
               child: Text(
                 'Trending',
                 style: TextStyle(
@@ -215,21 +219,26 @@ class TopicCard extends StatelessWidget {
         HomeController.to.selectedIndex.value = 12;
       },
       child: Container(
+        width: 50, // Reduced width for the smaller circle
+        height: 50, // Reduced height for the smaller circle
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(8.0),
+          gradient: const LinearGradient(
+            colors: [Colors.grey, Colors.redAccent],
+          ),
+          shape: BoxShape.circle,
         ),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               icon,
-              const SizedBox(height: 8.0),
+              const SizedBox(height: 5.0),
               Text(
                 title,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: 13,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,

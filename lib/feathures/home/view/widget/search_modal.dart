@@ -79,7 +79,7 @@ class _SearchFilterModalState extends State<SearchFilterModal> {
                     activeTrackColor: Colors.red[200],
                     activeColor: Colors.red,
                   )),
-              buildSectionTitle('SECTORS', 88),
+              buildSectionTitle('SECTORS'),
               buildCheckboxList(
                 [
                   'AdTech',
@@ -90,7 +90,7 @@ class _SearchFilterModalState extends State<SearchFilterModal> {
                 ],
                 widget.controller.selectedSector,
               ),
-              buildSectionTitle('REVENUE STREAM', 17),
+              buildSectionTitle('REVENUE STREAM'),
               buildCheckboxList(
                 [
                   'Advertising',
@@ -101,7 +101,7 @@ class _SearchFilterModalState extends State<SearchFilterModal> {
                 ],
                 widget.controller.selectedRevenue,
               ),
-              buildSectionTitle('BUSINESS MODEL', 6),
+              buildSectionTitle('BUSINESS MODEL'),
               buildChipList(
                 [
                   'B2B',
@@ -113,7 +113,7 @@ class _SearchFilterModalState extends State<SearchFilterModal> {
                 ],
                 widget.controller.selectedBusinessModel,
               ),
-              buildSectionTitle('City', 10),
+              buildSectionTitle('City'),
               buildChipList(
                 [
                   'Kathmandu',
@@ -171,11 +171,11 @@ class _SearchFilterModalState extends State<SearchFilterModal> {
     );
   }
 
-  Widget buildSectionTitle(String title, int count) {
+  Widget buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Text(
-        '$title 0/$count',
+        title,
         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
     );
