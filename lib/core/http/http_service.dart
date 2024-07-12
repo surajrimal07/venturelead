@@ -45,7 +45,6 @@ Future<Map<String, String>> getHeaders() async {
 
   Map<String, String> headers = {
     'Accept': 'application/json',
-//    'Content-Type': 'application/json',
     'Authorization': 'Bearer $bearertoken',
   };
 

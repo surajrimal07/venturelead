@@ -1,16 +1,22 @@
 import 'package:animations/animations.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide MultipartFile, FormData;
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:venturelead/core/utils/string_utils.dart';
 import 'package:venturelead/core/utils/theme.dart';
+import 'package:venturelead/feathures/auth/controller/auth_controller.dart';
+import 'package:venturelead/feathures/auth/controller/auth_network_controller.dart';
+import 'package:venturelead/feathures/auth/model/user_model.dart';
 import 'package:venturelead/feathures/auth/view/view/profile_view.dart';
 import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
+import 'package:venturelead/feathures/home/controller/companies_controller.dart';
+import 'package:venturelead/feathures/home/controller/network_controller.dart';
 import 'package:venturelead/feathures/home/view/page/blog_home.dart';
 import 'package:venturelead/feathures/home/view/page/bookmark_home.dart';
 import 'package:venturelead/feathures/home/view/page/companies_home.dart';
 import 'package:venturelead/feathures/home/view/page/company_home.dart';
-import 'package:venturelead/feathures/home/view/page/company_test.dart';
 import 'package:venturelead/feathures/home/view/page/contact_home.dart';
 import 'package:venturelead/feathures/home/view/page/faq_home.dart';
 import 'package:venturelead/feathures/home/view/page/foryou_news.home.dart';
@@ -157,7 +163,7 @@ class HomeController extends GetxController {
       const HomeScreenSearch(),
       CompanyDetails(),
       const NotificationScreen(),
-      const BookmarkScreen(),
+      BookmarkScreen(),
       const FAQScreen(),
       const ContactUsScreen(),
       NewsSearchPage(keyword: keyword),
@@ -172,13 +178,27 @@ class HomeController extends GetxController {
 
 class AppBarWidget extends StatelessWidget {
   AppBarWidget({super.key});
+
   final AppBarController appBarController = Get.put(AppBarController());
+  final CompanyController companyController = Get.put(CompanyController());
+  final User user = Get.find<AuthController>().authState.value.authEntity;
 
   @override
   Widget build(BuildContext context) {
+    //final newfavcompanyId = companyController.getSelectedCompany;
+
+    //bool isThisCompanyFav = false;
+    //List<String>? favoriteCompanies = user.favoriteCompanyIds ?? [];
+
+    // if (newfavcompanyId != null &&
+    //     favoriteCompanies.contains(newfavcompanyId['_id'])) {
+    //   isThisCompanyFav = true;
+    // }
+
     return Obx(() {
       final showBack = appBarController.showBack.value;
       final showBookmark = appBarController.showBookmark.value;
+      final bookmarkType = appBarController.bookmarkType.value;
       final showNotifi = appBarController.showNotificationIcon.value;
       final showSearch = appBarController.showSearch.value;
       final showSetting = appBarController.showSettings.value;
@@ -194,6 +214,7 @@ class AppBarWidget extends StatelessWidget {
             ? IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.black),
                 onPressed: () {
+                  appBarController.bookmarkType.value = 'news';
                   appBarController.showBack.value = false;
                   appBarController.showBookmark.value = true;
                   appBarController.showSearch.value = false;
@@ -245,21 +266,59 @@ class AppBarWidget extends StatelessWidget {
                 appBarController.showBack.value = true;
                 appBarController.showCustomText.value = false;
                 HomeController.to.selectedIndex.value = 8;
-                //Get.to(const DocumentViewer(title: 'Companies'));
               },
             ),
           if (showBookmark)
-            IconButton(
-              icon: const Icon(Icons.bookmark_border),
-              onPressed: () {
-                appBarController.showNotificationIcon.value = true;
-                appBarController.showBookmark.value = false;
-                appBarController.showCustomText.value = false;
-                appBarController.showBack.value = true;
-                HomeController.to.selectedIndex.value = 9;
-                // Handle bookmark button action
-              },
-            ),
+            Obx(() {
+              final newfavcompanyId = companyController.getSelectedCompany;
+              bool isThisCompanyFav = false;
+              List<String> favoriteCompanies = user.favoriteCompanyIds ?? [];
+
+              if (newfavcompanyId != null &&
+                  favoriteCompanies.contains(newfavcompanyId['_id'])) {
+                isThisCompanyFav = true;
+              }
+
+              return IconButton(
+                icon: Icon(bookmarkType == 'news'
+                    ? Icons.bookmark_border
+                    : isThisCompanyFav
+                        ? Icons.favorite
+                        : Icons.favorite_border),
+                onPressed: () async {
+                  if (bookmarkType == 'news') {
+                    appBarController.showNotificationIcon.value = true;
+                    appBarController.showBookmark.value = false;
+                    appBarController.showCustomText.value = false;
+                    appBarController.showBack.value = true;
+                    HomeController.to.selectedIndex.value = 9;
+                  } else {
+                    if (newfavcompanyId != null &&
+                        favoriteCompanies.contains(newfavcompanyId['_id'])) {
+                      favoriteCompanies.remove(newfavcompanyId['_id']);
+                    } else if (newfavcompanyId != null) {
+                      favoriteCompanies.add(newfavcompanyId['_id']);
+                    }
+
+                    FormData formData = FormData.fromMap({
+                      'email': user.email,
+                      'favoriteCompanies': favoriteCompanies,
+                    });
+
+                    bool updateProfile = await handleUpdateController(formData);
+
+                    if (updateProfile) {
+                      await fetchAllCompanies();
+                      Get.showSnackbar(const GetSnackBar(
+                        title: 'Success',
+                        message: 'Favorite company updated successfully.',
+                        duration: Duration(seconds: 1),
+                      ));
+                    }
+                  }
+                },
+              );
+            }),
           if (showSearch)
             IconButton(
               icon: const Icon(Icons.search),
@@ -282,8 +341,8 @@ class AppBarWidget extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.share),
               onPressed: () {
-                Get.to(const TargetMarketUI());
-                //Share.share('Check out this awesome business app VentureLead');
+                //Get.to(const TargetMarketUI());
+                Share.share('Check out this awesome business app VentureLead');
               },
             ),
         ],

@@ -8,6 +8,7 @@ class AppBarController extends GetxController {
   var showNotificationIcon = true.obs;
   var showSettings = false.obs;
   var showBookmark = true.obs;
+  var bookmarkType = 'news'.obs;
   var showCustomText = false.obs;
   var customText = ''.obs;
 

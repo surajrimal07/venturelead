@@ -1,6 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide MultipartFile, FormData;
 import 'package:share_plus/share_plus.dart';
+import 'package:venturelead/feathures/auth/controller/auth_controller.dart';
+import 'package:venturelead/feathures/auth/controller/auth_network_controller.dart';
+import 'package:venturelead/feathures/auth/model/user_model.dart';
 import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
 import 'package:venturelead/feathures/home/controller/companies_controller.dart';
 import 'package:venturelead/feathures/home/controller/network_controller.dart';
@@ -8,6 +12,7 @@ import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
 class DashboardView extends StatelessWidget {
   DashboardView({super.key});
+  final controlC = Get.put(AuthController());
   final appBarController = Get.put(AppBarController());
 
   final CompanyController companyController = Get.put(CompanyController());
@@ -23,6 +28,8 @@ class DashboardView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final companies = companyController.getCompanies;
+    // final newfavcompanyId = companyController.getSelectedCompany;
+    // List<String>? favoriteCompanies = user.favoriteCompanyIds ?? [];
 
     Widget buildCompanyCard(company) {
       return Card(
@@ -49,10 +56,49 @@ class DashboardView extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.bookmark_border),
-                    onPressed: () {},
-                  ),
+                  Obx(() {
+                    // print(company['_id']);
+
+                    final User user =
+                        Get.find<AuthController>().authState.value.authEntity;
+
+                    List<String> favoriteCompanies =
+                        user.favoriteCompanyIds ?? [];
+
+                    // print('favoriteCompanies: $favoriteCompanies  ');
+
+                    // print(
+                    //     'company matched ${favoriteCompanies.contains(company['_id'])}');
+
+                    return IconButton(
+                        icon: Icon(favoriteCompanies.contains(company['_id'])
+                            ? Icons.bookmark
+                            : Icons.bookmark_border),
+                        onPressed: () async {
+                          if (favoriteCompanies.contains(company['_id'])) {
+                            favoriteCompanies.remove(company['_id']);
+                          } else {
+                            favoriteCompanies.add(company['_id']);
+                          }
+
+                          FormData formData = FormData.fromMap({
+                            'email': user.email,
+                            'favoriteCompanies': favoriteCompanies,
+                          });
+
+                          bool updateProfile =
+                              await handleUpdateController(formData);
+
+                          if (updateProfile) {
+                            await fetchAllCompanies();
+                            Get.showSnackbar(const GetSnackBar(
+                              title: 'Success',
+                              message: 'Bookmark updated.',
+                              duration: Duration(seconds: 1),
+                            ));
+                          }
+                        });
+                  }),
                   IconButton(
                     icon: const Icon(Icons.share),
                     onPressed: () {
@@ -104,6 +150,7 @@ class DashboardView extends StatelessWidget {
                       appBarController.showShare.value = true;
                       appBarController.showCustomText.value = true;
                       appBarController.customText.value = company['name'];
+                      appBarController.bookmarkType.value = 'company';
 
                       companyController.setSelectedCompany(company);
 

@@ -399,24 +399,24 @@ class _ProfilePageState extends State<ProfileScreen> {
                             ),
                           ),
                         ),
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              selectedTab = 'Favorite Companies';
-                            });
-                          },
-                          child: Text(
-                            'Favorite Companies',
-                            style: TextStyle(
-                              color: selectedTab == 'Favorite Companies'
-                                  ? Colors.red
-                                  : Colors.grey,
-                              fontWeight: selectedTab == 'Favorite Companies'
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                            ),
-                          ),
-                        )
+                        // TextButton(
+                        //   onPressed: () {
+                        //     setState(() {
+                        //       selectedTab = 'Favorite Companies';
+                        //     });
+                        //   },
+                        //   child: Text(
+                        //     'Favorite Companies',
+                        //     style: TextStyle(
+                        //       color: selectedTab == 'Favorite Companies'
+                        //           ? Colors.red
+                        //           : Colors.grey,
+                        //       fontWeight: selectedTab == 'Favorite Companies'
+                        //           ? FontWeight.bold
+                        //           : FontWeight.normal,
+                        //     ),
+                        //   ),
+                        // )
                       ],
                     ),
                   ),
