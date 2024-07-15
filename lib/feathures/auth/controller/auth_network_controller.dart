@@ -24,7 +24,7 @@ Future<bool> handleLoginController(String email, String password,
       data: {'email': email, 'password': password},
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 && response.data['success'] == true) {
       final user = User.fromJson(response.data['data']);
       authController.updateAuthState(authController.authState.value.copyWith(
         isLoading: false,
@@ -57,7 +57,7 @@ Future<bool> handleLoginController(String email, String password,
         message: response.data['message'],
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 1),
       ));
 
       return false;
@@ -90,7 +90,7 @@ Future<bool> handleSignupController(
       data: {'email': email, 'password': password, 'username': userName},
     );
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200 && response.data['success'] == true) {
       Get.to(const LoginScreen());
       authController.updateAuthState(
           authController.authState.value.copyWith(isLoading: false));

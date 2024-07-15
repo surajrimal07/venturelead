@@ -88,12 +88,20 @@ class _ClaimModalState extends State<ClaimModal> {
         ),
       ),
       actions: <Widget>[
-        TextButton(
+        ElevatedButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('You have cancelled claim process.'),
+                backgroundColor: Colors.red,
+              ),
+            );
           },
-          style: TextButton.styleFrom(foregroundColor: Colors.black),
-          child: const Text('Cancel'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey,
+          ),
+          child: const Text('Cancel', style: TextStyle(color: Colors.white)),
         ),
         ElevatedButton(
           onPressed: () async {

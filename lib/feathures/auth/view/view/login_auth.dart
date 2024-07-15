@@ -72,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           radius: 60,
                           backgroundColor: Colors.white,
                           child: Image.asset(
-                            'assets/images/logo.png', // Replace with your logo asset path
+                            'assets/images/logo.png',
                             height: 80,
                           ),
                         ),

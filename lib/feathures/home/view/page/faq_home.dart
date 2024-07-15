@@ -5,6 +5,8 @@ import 'package:venturelead/feathures/common/presentation/widget/privacy_common.
 import 'package:venturelead/feathures/common/presentation/widget/terms_common.dart';
 import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
 import 'package:venturelead/feathures/home/controller/faq_controller.dart';
+import 'package:venturelead/feathures/home/view/page/blog_test.dart';
+import 'package:venturelead/feathures/home/view/page/company_details.dart';
 import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
 class FAQScreen extends StatefulWidget {
@@ -126,6 +128,24 @@ class FAQScreenState extends State<FAQScreen> {
               ),
             ),
           ),
+          Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  Get.to(const BlogViewer());
+                },
+                child: const Text('blog test'),
+              )),
+          Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  Get.to(const DocumentViewer(
+                    title: 'Company Details',
+                  ));
+                },
+                child: const Text('company test'),
+              )),
         ],
       ),
       floatingActionButton: FloatingActionButton(

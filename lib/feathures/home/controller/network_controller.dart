@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide MultipartFile, FormData;
 import 'package:venturelead/core/http/http_service.dart';
-import 'package:venturelead/core/toast.dart';
 import 'package:venturelead/feathures/auth/controller/auth_controller.dart';
 import 'package:venturelead/feathures/home/controller/companies_controller.dart';
 
@@ -24,7 +23,7 @@ Future<dynamic> fetchCompanies() async {
 
       companyController.setCompanyEntity(companies);
 
-      CustomToast.showToast('Companies fetched successfully');
+      //CustomToast.showToast('Companies fetched successfully');
 
       return companies;
     } else {
@@ -60,7 +59,7 @@ Future<dynamic> fetchAllCompanies() async {
 
       companyController.updateAllCompanyState(companies);
 
-      CustomToast.showToast('Companies fetched successfully');
+      //CustomToast.showToast('Companies fetched successfully');
 
       return companies;
     } else {
@@ -101,13 +100,13 @@ Future<dynamic> fetchFeaturedCompanies() async {
 
       companyController.setCompanyEntity(companies);
 
-      Get.showSnackbar(const GetSnackBar(
-        title: 'Success',
-        message: 'Companies fetched successfully',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        duration: Duration(seconds: 2),
-      ));
+      // Get.showSnackbar(const GetSnackBar(
+      //   title: 'Success',
+      //   message: 'Companies fetched successfully',
+      //   snackPosition: SnackPosition.BOTTOM,
+      //   backgroundColor: Colors.green,
+      //   duration: Duration(seconds: 2),
+      // ));
 
       return companies;
     } else {
@@ -206,6 +205,40 @@ Future<bool> handleCompanyClaim(FormData formData) async {
         snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
   } catch (e) {
     Get.snackbar('Error', 'Update failed: $e',
+        snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+  }
+
+  return false;
+}
+
+Future<dynamic> fetchblogs() async {
+  try {
+    final response = await httpService.dio.get('/api/company/get_new_company');
+
+    if (response.statusCode == 200) {
+      final companies = response.data['companies'] as List<dynamic>;
+
+      companyController.setCompanyEntity(companies);
+
+      return companies;
+    } else {
+      Get.showSnackbar(GetSnackBar(
+        title: 'Error',
+        message: response.data['message'],
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 1),
+      ));
+
+      return [];
+    }
+  } on DioException catch (e) {
+    debugPrint('Fetch failed: $e');
+    Get.snackbar('Error', 'Fetch failed: $e',
+        snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
+  } catch (e) {
+    debugPrint('Fetch failed: $e');
+    Get.snackbar('Error', 'Fetch failed: $e',
         snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
   }
 

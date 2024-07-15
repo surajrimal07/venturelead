@@ -127,12 +127,20 @@ class _ContactUsModalState extends State<ContactUsModal> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
-                      onPressed: _cancel,
+                      onPressed: () {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Cancelled'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
+                        backgroundColor: Colors.grey,
                       ),
                       child: const Text('Cancel',
-                          style: TextStyle(color: Colors.black)),
+                          style: TextStyle(color: Colors.white)),
                     ),
                     ElevatedButton(
                       onPressed: _send,

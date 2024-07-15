@@ -10,6 +10,7 @@ import 'package:venturelead/feathures/home/controller/network_controller.dart';
 import 'package:venturelead/feathures/home/view/widget/claim_modal.dart';
 import 'package:venturelead/feathures/home/view/widget/connection.dart';
 import 'package:venturelead/feathures/home/view/widget/navigation.dart';
+import 'package:venturelead/feathures/home/view/widget/rate_modal.dart';
 
 class CompanyDetails extends StatelessWidget {
   CompanyDetails({super.key});
@@ -61,7 +62,6 @@ class CompanyDetails extends StatelessWidget {
           width: 100,
           height: 60,
           color: Colors.grey[300],
-          // Replace with actual image
           child: const Center(child: Text('Image')),
         ),
         const SizedBox(width: 8),
@@ -69,56 +69,6 @@ class CompanyDetails extends StatelessWidget {
       ],
     );
   }
-
-  // Future<void> _launchInBrowser(Uri url) async {
-  //   if (!await launchUrl(
-  //     url,
-  //     mode: LaunchMode.externalApplication,
-  //   )) {
-  //     Get.snackbar(
-  //       'Error',
-  //       'Could not launch $url in browser',
-  //       snackPosition: SnackPosition.BOTTOM,
-  //       backgroundColor: Colors.red,
-  //       colorText: Colors.white,
-  //     );
-  //   }
-  // }
-
-  // Widget _buildRecentlyAddedCard(
-  //     dynamic company, appBarController, companyController) {
-  //   return Card(
-  //     child: Padding(
-  //       padding: const EdgeInsets.all(16),
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           GestureDetector(
-  //               onTap: () {
-  //                 appBarController.showSearch.value = true;
-  //                 appBarController.showBack.value = true;
-  //                 appBarController.showBookmark.value = true;
-  //                 appBarController.showShare.value = true;
-  //                 appBarController.showCustomText.value = true;
-  //                 appBarController.customText.value = company['name'];
-
-  //                 companyController.setSelectedCompany(company);
-  //                 HomeController.to.selectedIndex.value = 7;
-  //               },
-  //               child: Image.asset('assets/images/karkhana.png',
-  //                   width: 170, height: 90)),
-  //           const SizedBox(height: 8),
-  //           Text(company['name'],
-  //               style:
-  //                   const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-  //           const SizedBox(height: 4),
-  //           Text(company['companyDescription'],
-  //               style: const TextStyle(fontSize: 12, color: Colors.grey)),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Future<void> _makePhoneCall(String phoneNumber) async {
     final Uri launchUri = Uri(
@@ -138,14 +88,6 @@ class CompanyDetails extends StatelessWidget {
       );
     }
   }
-
-  // Future<void> _launchUrl(String url) async {
-  //   final Uri launchUri = Uri(
-  //     scheme: 'https',
-  //     path: url,
-  //   );
-  //   await launchUrl(launchUri);
-  // }
 
   Widget _buildInfoRow(String label, String value) {
     return Padding(
@@ -247,11 +189,11 @@ class CompanyDetails extends StatelessWidget {
                   spacing: 8,
                   children: [
                     Chip(label: Text(company['category'])), //only one category
-                    // const Chip(label: Text('Manufacturing')),
-                    // const Chip(label: Text('STEM')),
+                    const Chip(label: Text('Manufacturing')),
+                    const Chip(label: Text('STEM')),
                   ],
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -308,7 +250,7 @@ class CompanyDetails extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.values[5],
                   children: [
@@ -537,7 +479,7 @@ class CompanyDetails extends StatelessWidget {
             ),
             builder: (BuildContext context) {
               connectionController.companyId.value = company['_id'];
-              return const ConnectionModel();
+              return const RatingModal();
             },
           );
         },
@@ -546,7 +488,7 @@ class CompanyDetails extends StatelessWidget {
         shape: const CircleBorder(),
         padding: const EdgeInsets.all(16.0),
         child: const Icon(
-          Icons.add_business,
+          Icons.star_border_outlined,
           color: Colors.white,
         ),
       ),

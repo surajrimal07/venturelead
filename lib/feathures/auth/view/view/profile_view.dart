@@ -86,7 +86,7 @@ class _ProfilePageState extends State<ProfileScreen> {
                 const Text('Edit Profile', style: TextStyle(fontSize: 18.0)),
                 Row(
                   children: [
-                    TextButton(
+                    ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -96,10 +96,13 @@ class _ProfilePageState extends State<ProfileScreen> {
                           ),
                         );
                       },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey,
+                      ),
                       child: const Text('Cancel',
-                          style: TextStyle(color: Colors.red)),
+                          style: TextStyle(color: Colors.white)),
                     ),
-                    TextButton(
+                    ElevatedButton(
                       onPressed: () async {
                         Get.showSnackbar(const GetSnackBar(
                           title: 'Info',
@@ -134,8 +137,10 @@ class _ProfilePageState extends State<ProfileScreen> {
                           Navigator.pop(context);
                         }
                       },
+                      style:
+                          ElevatedButton.styleFrom(backgroundColor: Colors.red),
                       child: const Text('Save',
-                          style: TextStyle(color: Colors.green)),
+                          style: TextStyle(color: Colors.white)),
                     ),
                   ],
                 ),
@@ -241,6 +246,8 @@ class _ProfilePageState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final userPrefs = UserSharedPrefss();
+    final RxString selectedTab = 'About'.obs;
+
     if (user.interests != null && user.interests!.isNotEmpty) {
       String interestString = user.interests![0];
       interestString = interestString.substring(1, interestString.length - 1);
@@ -250,204 +257,216 @@ class _ProfilePageState extends State<ProfileScreen> {
     }
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          toolbarHeight: 40,
-          actions: [
-            TextButton(
-              onPressed: () {
-                showEditProfileModal(context);
-              },
-              child: const Text(
-                'Edit Profile',
-                style: TextStyle(color: Colors.red),
-              ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        toolbarHeight: 40,
+        actions: [
+          TextButton(
+            onPressed: () {
+              showEditProfileModal(context);
+            },
+            child: const Text(
+              'Edit Profile',
+              style: TextStyle(color: Colors.red),
             ),
-          ],
-        ),
-        body: RefreshIndicator(
-          backgroundColor: Colors.white,
-          color: Colors.red,
-          onRefresh: () async {
-            final email = await userPrefs.getData<String>('email') ?? '';
-            final password = await userPrefs.getData<String>('password') ?? '';
+          ),
+        ],
+      ),
+      body: RefreshIndicator(
+        backgroundColor: Colors.white,
+        color: Colors.red,
+        onRefresh: () async {
+          final email = await userPrefs.getData<String>('email') ?? '';
+          final password = await userPrefs.getData<String>('password') ?? '';
 
-            bool isLoggedIn =
-                await handleLoginController(email, password, refresh: true);
-            if (!isLoggedIn) {
-              Get.offAll(const LoginScreen());
-              userPrefs.saveData<bool>('isLoggedInSave', false);
-            }
-          },
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                CircleAvatar(
-                    radius: 50, backgroundImage: NetworkImage(user.picture!)),
-                //const SizedBox(height: 10),
-                Text(
-                  user.username,
-                  style: const TextStyle(
-                      fontSize: 22, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 4),
-                Text(user.email),
-                const SizedBox(height: 4),
-                Text(
-                  'Employee of ${user.employeeCompanyIds != null && user.employeeCompanyIds!.isNotEmpty ? user.employeeCompanyIds!.join(', ') : 'None'}',
-                ),
-
-                const SizedBox(height: 5),
-                SizedBox(
-                  height: 50,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              selectedTab = 'About';
-                            });
-                          },
-                          child: Text(
+          bool isLoggedIn =
+              await handleLoginController(email, password, refresh: true);
+          if (!isLoggedIn) {
+            Get.offAll(const LoginScreen());
+            userPrefs.saveData<bool>('isLoggedInSave', false);
+          }
+        },
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              CircleAvatar(
+                  radius: 50, backgroundImage: NetworkImage(user.picture!)),
+              //const SizedBox(height: 10),
+              Text(
+                user.username,
+                style:
+                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 4),
+              Text(user.email),
+              const SizedBox(height: 4),
+              Text(
+                'Employee of ${user.employeeCompanyIds != null && user.employeeCompanyIds!.isNotEmpty ? user.employeeCompanyIds!.join(', ') : 'None'}',
+              ),
+              const SizedBox(height: 5),
+              SizedBox(
+                height: 50,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        selectedTab.value = 'About';
+                      },
+                      child: Obx(() => Text(
                             'About',
                             style: TextStyle(
-                              color: selectedTab == 'About'
+                              color: selectedTab.value == 'About'
                                   ? Colors.red
                                   : Colors.grey,
-                              fontWeight: selectedTab == 'About'
+                              fontWeight: selectedTab.value == 'About'
                                   ? FontWeight.bold
                                   : FontWeight.normal,
                             ),
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              selectedTab = 'Interests';
-                            });
-                          },
-                          child: Text(
+                          )),
+                    ),
+                    const SizedBox(width: 5),
+                    TextButton(
+                      onPressed: () {
+                        selectedTab.value = 'Interests';
+                      },
+                      child: Obx(() => Text(
                             'Interests',
                             style: TextStyle(
-                              color: selectedTab == 'Interests'
+                              color: selectedTab.value == 'Interests'
                                   ? Colors.red
                                   : Colors.grey,
-                              fontWeight: selectedTab == 'Interests'
+                              fontWeight: selectedTab.value == 'Interests'
                                   ? FontWeight.bold
                                   : FontWeight.normal,
                             ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              selectedTab = 'Settings';
-                            });
-                          },
-                          child: Text(
+                          )),
+                    ),
+                    const SizedBox(width: 10),
+                    TextButton(
+                      onPressed: () {
+                        selectedTab.value = 'Settings';
+                      },
+                      child: Obx(() => Text(
                             'Settings',
                             style: TextStyle(
-                              color: selectedTab == 'Settings'
+                              color: selectedTab.value == 'Settings'
                                   ? Colors.red
                                   : Colors.grey,
-                              fontWeight: selectedTab == 'Settings'
+                              fontWeight: selectedTab.value == 'Settings'
                                   ? FontWeight.bold
                                   : FontWeight.normal,
                             ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              selectedTab = 'Connections';
-                            });
-                          },
-                          child: Text(
+                          )),
+                    ),
+                    const SizedBox(width: 10),
+                    TextButton(
+                      onPressed: () {
+                        selectedTab.value = 'Connections';
+                      },
+                      child: Obx(() => Text(
                             'Connections',
                             style: TextStyle(
-                              color: selectedTab == 'Connections'
+                              color: selectedTab.value == 'Connections'
                                   ? Colors.red
                                   : Colors.grey,
-                              fontWeight: selectedTab == 'Connections'
+                              fontWeight: selectedTab.value == 'Connections'
                                   ? FontWeight.bold
                                   : FontWeight.normal,
                             ),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              selectedTab = 'Reviews';
-                            });
-                          },
-                          child: Text(
+                          )),
+                    ),
+                    const SizedBox(width: 10),
+                    TextButton(
+                      onPressed: () {
+                        selectedTab.value = 'Reviews';
+                      },
+                      child: Obx(() => Text(
                             'Reviews',
                             style: TextStyle(
-                              color: selectedTab == 'Reviews'
+                              color: selectedTab.value == 'Reviews'
                                   ? Colors.red
                                   : Colors.grey,
-                              fontWeight: selectedTab == 'Reviews'
+                              fontWeight: selectedTab.value == 'Reviews'
                                   ? FontWeight.bold
                                   : FontWeight.normal,
                             ),
-                          ),
-                        ),
-                        // TextButton(
-                        //   onPressed: () {
-                        //     setState(() {
-                        //       selectedTab = 'Favorite Companies';
-                        //     });
-                        //   },
-                        //   child: Text(
-                        //     'Favorite Companies',
-                        //     style: TextStyle(
-                        //       color: selectedTab == 'Favorite Companies'
-                        //           ? Colors.red
-                        //           : Colors.grey,
-                        //       fontWeight: selectedTab == 'Favorite Companies'
-                        //           ? FontWeight.bold
-                        //           : FontWeight.normal,
-                        //     ),
-                        //   ),
-                        // )
-                      ],
+                          )),
                     ),
-                  ),
+                  ],
                 ),
-                if (selectedTab == 'About') AboutCard(user),
-                if (selectedTab == 'Interests')
-                  InterestCard(interests: interestNames),
-                if (selectedTab == 'Settings') SettingsCard(),
-                if (selectedTab == 'Connections') ConnectionCard(user: user),
-              ],
-            ),
+              ),
+              Obx(() {
+                if (selectedTab.value == 'About') return AboutCard(user);
+                if (selectedTab.value == 'Interests') {
+                  return InterestCard(interests: interestNames);
+                }
+                if (selectedTab.value == 'Settings') return SettingsCard();
+                if (selectedTab.value == 'Connections') {
+                  return ConnectionCard(user: user);
+                }
+                if (selectedTab.value == 'Reviews') {
+                  return const ReviewCard();
+                }
+                return Container();
+              }),
+            ],
           ),
         ),
-        floatingActionButton: RawMaterialButton(
-          onPressed: () {
-            appBarController.showBack.value = true;
-            appBarController.showCustomText.value = true;
-            appBarController.customText.value = 'FAQ';
-            appBarController.showBookmark.value = false;
-            appBarController.showNotificationIcon.value = false;
-            HomeController.to.selectedIndex.value = 10;
-          },
-          elevation: 6.0,
-          fillColor: const Color.fromARGB(255, 216, 106, 98),
-          shape: const CircleBorder(),
-          padding: const EdgeInsets.all(16.0),
-          child: const Icon(
-            Icons.support_agent,
-            color: Colors.white,
-          ),
-        ));
+      ),
+      floatingActionButton: RawMaterialButton(
+        onPressed: () {
+          appBarController.showBack.value = true;
+          appBarController.showCustomText.value = true;
+          appBarController.customText.value = 'FAQ';
+          appBarController.showBookmark.value = false;
+          appBarController.showNotificationIcon.value = false;
+          HomeController.to.selectedIndex.value = 10;
+        },
+        elevation: 6.0,
+        fillColor: const Color.fromARGB(255, 216, 106, 98),
+        shape: const CircleBorder(),
+        padding: const EdgeInsets.all(16.0),
+        child: const Icon(
+          Icons.support_agent,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+}
+
+class ReviewCard extends StatelessWidget {
+  const ReviewCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox(
+      height: 600,
+      width: 400,
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Text(
+            //   'Bio',
+            //   style: TextStyle(
+            //     fontSize: 18,
+            //     fontWeight: FontWeight.bold,
+            //   ),
+            // ),
+            // SizedBox(height: 8),
+            Text(
+              "You have not made any review so far, you can review company after you have made a successfuly connection with them.",
+              style: TextStyle(color: Colors.grey),
+            ),
+            SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -478,13 +497,6 @@ class AboutCard extends StatelessWidget {
                   "You haven't told us anything about yourself. Please add your bio to complete your user profile.",
               style: const TextStyle(color: Colors.grey),
             ),
-            // const Text(
-            //   'Employee of ',
-            //   style: TextStyle(
-            //     fontSize: 18,
-            //     fontWeight: FontWeight.bold,
-            //   ),
-            // ),
             const SizedBox(height: 8),
           ],
         ),
