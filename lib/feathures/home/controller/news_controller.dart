@@ -9,6 +9,7 @@ class NewsController extends GetxController {
   var searchNewsList = <News>[].obs;
   var isLoading = false.obs;
   var errorMessage = ''.obs;
+  var trendingNews = <News>[].obs;
 
   void setLoading(bool loading) {
     isLoading.value = loading;
@@ -26,19 +27,50 @@ class NewsController extends GetxController {
     searchNewsList.value = news;
   }
 
+  void setTrendingNews(List<News> news) {
+    trendingNews.value = news;
+  }
+
   Future<void> fetchNews(String keyword) async {
     try {
       final httpService = Get.find<HttpService>();
       setLoading(true);
 
       final response = await httpService.dio
-          .get('https://api.surajr.com.np/news?keyword=$keyword&limit=20');
+          .get('https://api.surajr.com.np/news?keyword=$keyword');
 
       if (response.statusCode == 200) {
         List<News> news = (response.data as List)
             .map((newsJson) => News.fromJson(newsJson))
             .toList();
         setNewsList(news);
+      } else {
+        setError(response.data['message']);
+      }
+    } on DioException catch (e) {
+      debugPrint('Failed to fetch news: $e');
+      setError('Failed to fetch news: $e');
+    } catch (e) {
+      debugPrint('Failed to fetch news: $e');
+      setError('Failed to fetch news: $e');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  Future<void> fetchTrendingNews() async {
+    try {
+      final httpService = Get.find<HttpService>();
+      setLoading(true);
+
+      final response = await httpService.dio
+          .get('https://api.surajr.com.np/news?keyword=trending');
+
+      if (response.statusCode == 200) {
+        List<News> news = (response.data as List)
+            .map((newsJson) => News.fromJson(newsJson))
+            .toList();
+        setTrendingNews(news);
       } else {
         setError(response.data['message']);
         Get.showSnackbar(GetSnackBar(
@@ -61,6 +93,22 @@ class NewsController extends GetxController {
           snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red);
     } finally {
       setLoading(false);
+    }
+  }
+
+  Future<bool> updateNewsView(String key) async {
+    try {
+      final httpService = Get.find<HttpService>();
+
+      final response = await httpService.dio
+          .get('https://api.surajr.com.np/updatenewsview?id=$key');
+
+      if (response.statusCode == 200) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
     }
   }
 

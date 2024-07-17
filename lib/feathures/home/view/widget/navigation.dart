@@ -25,6 +25,7 @@ import 'package:venturelead/feathures/home/view/page/latest_news_home.dart';
 import 'package:venturelead/feathures/home/view/page/news_search_result_home.dart';
 import 'package:venturelead/feathures/home/view/page/notification_home.dart';
 import 'package:venturelead/feathures/home/view/page/search_company.dart';
+import 'package:venturelead/feathures/home/view/widget/websocket.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -182,6 +183,8 @@ class AppBarWidget extends StatelessWidget {
   final AppBarController appBarController = Get.put(AppBarController());
   final CompanyController companyController = Get.put(CompanyController());
   final User user = Get.find<AuthController>().authState.value.authEntity;
+  final NotificationController newsController =
+      Get.put(NotificationController());
 
   @override
   Widget build(BuildContext context) {
@@ -253,7 +256,9 @@ class AppBarWidget extends StatelessWidget {
         actions: [
           if (showNotifi)
             IconButton(
-              icon: const Icon(Icons.notifications_outlined),
+              icon: Icon(newsController.newsList.isEmpty
+                  ? Icons.notifications_outlined
+                  : Icons.notifications_active),
               onPressed: () {
                 appBarController.showNotificationIcon.value = false;
                 appBarController.showBack.value = true;

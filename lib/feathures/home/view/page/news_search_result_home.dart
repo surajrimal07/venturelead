@@ -64,12 +64,12 @@ class NewsSearchPage extends StatelessWidget {
                 Column(
                   children: newsController.searchNewsList
                       .map((news) => newsCard(
-                            news.title,
-                            news.source,
-                            news.imgUrl,
-                            formatDateString(news.pubDate),
-                            news.link,
-                          ))
+                          news.title,
+                          news.source,
+                          news.imgUrl,
+                          formatDateString(news.pubDate),
+                          news.link,
+                          news.uniqueKey))
                       .toList(),
                 ),
               ],
@@ -92,9 +92,13 @@ class NewsSearchPage extends StatelessWidget {
   }
 
   Widget newsCard(String title, String source, String imageUrl, String pubDate,
-      String url) {
+      String url, String newsKey) {
+    final NewsController newsController = Get.put(NewsController());
+
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
+        await newsController.updateNewsView(newsKey);
+
         Get.to(WebViewPage(name: 'News', url: url));
       },
       child: Card(

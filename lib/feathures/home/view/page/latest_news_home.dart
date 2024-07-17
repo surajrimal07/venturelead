@@ -37,7 +37,8 @@ class LatestNewsView extends StatelessWidget {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      newsController.fetchNews('Business');
+      newsController.fetchNews('business');
+      newsController.fetchTrendingNews();
     });
 
     return Scaffold(
@@ -45,7 +46,7 @@ class LatestNewsView extends StatelessWidget {
         backgroundColor: Colors.white,
         color: Colors.red,
         onRefresh: () async {
-          newsController.fetchNews('Business');
+          newsController.fetchNews('business');
         },
         child: SingleChildScrollView(
           controller: scrollController,
@@ -80,9 +81,8 @@ class LatestNewsView extends StatelessWidget {
                     ),
                   ],
                 ),
-                //const SizedBox(height: 4),
                 const Text(
-                  'Featured Stories',
+                  'Trending Stories',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -102,7 +102,7 @@ class LatestNewsView extends StatelessWidget {
                           child: Text(newsController.errorMessage.value));
                     } else {
                       var featuredStories =
-                          newsController.newsList.take(5).toList();
+                          newsController.trendingNews.take(10).toList();
                       return Row(
                         children: featuredStories
                             .map((news) => _buildFeaturedStoryCard(
@@ -113,6 +113,7 @@ class LatestNewsView extends StatelessWidget {
                                   news.imgUrl,
                                   formatDateString(news.pubDate),
                                   news.link,
+                                  news.uniqueKey,
                                 ))
                             .toList(),
                       );
@@ -121,7 +122,7 @@ class LatestNewsView extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 const Text(
-                  'Trending Stories',
+                  'Latest Stories',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -174,10 +175,19 @@ class LatestNewsView extends StatelessWidget {
     );
   }
 
-  Widget _buildFeaturedStoryCard(String category, String readTime, String title,
-      String description, String image, String pubDate, String url) {
+  Widget _buildFeaturedStoryCard(
+      String category,
+      String readTime,
+      String title,
+      String description,
+      String image,
+      String pubDate,
+      String url,
+      String key) {
+    final NewsController newsController = Get.put(NewsController());
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
+        await newsController.updateNewsView(key);
         Get.to(WebViewPage(name: 'News', url: url));
       },
       child: Padding(

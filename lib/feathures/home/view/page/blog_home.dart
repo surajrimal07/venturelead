@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:venturelead/core/utils/customWebview.dart';
 import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
+import 'package:venturelead/feathures/home/controller/news_controller.dart';
 import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
 class BlogPage extends StatefulWidget {
@@ -13,13 +14,17 @@ class BlogPage extends StatefulWidget {
 
 class _BlogPageState extends State<BlogPage> {
   final TextEditingController searchTextController = TextEditingController();
-  //final NewsController newsController = Get.put(NewsController());
+  final NewsController newsController = Get.put(NewsController());
   final appBarController = Get.put(AppBarController());
 
   bool isSearchVisible = false;
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      newsController.fetchTrendingNews();
+    });
+
     return Scaffold(
       backgroundColor: Get.isDarkMode ? Colors.black : Colors.grey[200],
       body: SingleChildScrollView(
@@ -160,28 +165,35 @@ class _BlogPageState extends State<BlogPage> {
                 ),
               ),
             ),
-            const SingleChildScrollView(
+            SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  NewsCard(
-                    imageUrl: 'assets/images/news.jpeg',
-                    newsUrl:
-                        'https://www.sharesansar.com/newsdetail/gold-prices-surge-by-rs-1000-silver-follows-suit-with-rs-10-increase-2024-06-28',
-                    title:
-                        "Government Introduces 'National Startups Policy, 2080' to Boost Startup Investments",
-                    source: 'Sharesansar',
-                  ),
-                  NewsCard(
-                    imageUrl: 'assets/images/news.jpeg',
-                    newsUrl:
-                        'https://www.sharesansar.com/newsdetail/gold-prices-surge-by-rs-1000-silver-follows-suit-with-rs-10-increase-2024-06-28',
-                    title:
-                        'Nepal Secures Over Rs 53 Billion in Foreign Investment Commitments in First Ten Months of Fiscal Year',
-                    source: 'Sharesansar',
-                  ),
-                ],
-              ),
+              child: Obx(() {
+                if (newsController.isLoading.value) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                    ),
+                  );
+                } else if (newsController.errorMessage.isNotEmpty) {
+                  return Center(
+                    child: Text(newsController.errorMessage.value),
+                  );
+                } else {
+                  var featuredStories =
+                      newsController.trendingNews.take(10).toList();
+                  return Row(
+                    children: featuredStories.map((news) {
+                      return NewsCard(
+                        source: news.source,
+                        newsKey: news.uniqueKey,
+                        title: news.title,
+                        imageUrl: news.imgUrl,
+                        newsUrl: news.link,
+                      );
+                    }).toList(),
+                  );
+                }
+              }),
             ),
           ],
         ),
@@ -256,21 +268,24 @@ class NewsCard extends StatelessWidget {
   final String title;
   final String source;
   final String newsUrl;
+  final String newsKey;
 
-  const NewsCard({
-    super.key,
-    required this.imageUrl,
-    required this.newsUrl,
-    required this.title,
-    required this.source,
-  });
+  const NewsCard(
+      {super.key,
+      required this.imageUrl,
+      required this.newsUrl,
+      required this.title,
+      required this.source,
+      required this.newsKey});
 
   @override
   Widget build(BuildContext context) {
+    final NewsController newsController = Get.put(NewsController());
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: GestureDetector(
-        onTap: () {
+        onTap: () async {
+          await newsController.updateNewsView(newsKey);
           Get.to(WebViewPage(name: 'News', url: newsUrl));
         },
         child: SizedBox(
@@ -278,7 +293,8 @@ class NewsCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset(imageUrl, height: 150, width: 300, fit: BoxFit.cover),
+              Image.network(imageUrl,
+                  height: 150, width: 300, fit: BoxFit.cover),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(

@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:venturelead/core/utils/customWebview.dart';
 import 'package:venturelead/feathures/auth/view/widget/settings_widget.dart';
+import 'package:venturelead/feathures/home/controller/news_controller.dart';
+import 'package:venturelead/feathures/home/view/widget/websocket.dart';
 
 class NotificationScreen extends StatelessWidget {
   NotificationScreen({super.key});
 
   final settingController = Get.put(SettingsController());
-
-  final RxList<Map<String, String>> notifications = <Map<String, String>>[
-    {'title': 'Welcome!', 'message': 'Thank you for joining us.'},
-    {'title': 'Info', 'message': 'This is a sample notification.'},
-    {
-      'title': 'Reminder',
-      'message': 'Don\'t forget to follow your favorite companies and topics'
-    },
-  ].obs;
+  final NotificationController newsController =
+      Get.put(NotificationController());
 
   void clearNotifications() {
-    notifications.clear();
+    newsController.clearNotifications();
   }
 
   @override
@@ -28,11 +24,11 @@ class NotificationScreen extends StatelessWidget {
         await Future.delayed(const Duration(seconds: 1));
       },
       child: Scaffold(
-        body: Center(
-          child: Obx(() {
-            if (settingController.isNotificationOn.value) {
-              if (notifications.isEmpty) {
-                return Column(
+        body: Obx(() {
+          if (settingController.isNotificationOn.value) {
+            if (newsController.newsList.isEmpty) {
+              return Center(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
@@ -42,31 +38,44 @@ class NotificationScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 15),
                     const Text(
-                      '       No pending notifications',
+                      'No pending notifications',
                       style: TextStyle(fontSize: 18),
                     ),
                   ],
-                );
-              } else {
-                return Expanded(
-                  child: ListView.builder(
-                    itemCount: notifications.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 16),
-                        child: ListTile(
-                          leading: const Icon(Icons.notifications),
-                          title: Text(notifications[index]['title']!),
-                          subtitle: Text(notifications[index]['message']!),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              }
+                ),
+              );
             } else {
-              return Column(
+              return ListView.builder(
+                itemCount: newsController.newsList.length,
+                itemBuilder: (context, index) {
+                  final reversedIndex =
+                      newsController.newsList.length - 1 - index;
+                  final newsItem = newsController.newsList[reversedIndex];
+
+                  return Card(
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: GestureDetector(
+                      onTap: () async {
+                        final NewsController newsController =
+                            Get.put(NewsController());
+                        await newsController
+                            .updateNewsView(newsItem['unique_key']);
+                        Get.to(WebViewPage(name: 'News', url: newsItem['url']));
+                      },
+                      child: ListTile(
+                        leading: const Icon(Icons.notifications),
+                        title: Text(newsItem['title']),
+                        subtitle: Text(newsItem['description']),
+                      ),
+                    ),
+                  );
+                },
+              );
+            }
+          } else {
+            return Center(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
@@ -80,13 +89,13 @@ class NotificationScreen extends StatelessWidget {
                     style: TextStyle(fontSize: 17),
                   ),
                 ],
-              );
-            }
-          }),
-        ),
+              ),
+            );
+          }
+        }),
         floatingActionButton: Obx(() {
           if (settingController.isNotificationOn.value &&
-              notifications.isNotEmpty) {
+              newsController.newsList.isNotEmpty) {
             return FloatingActionButton(
               backgroundColor: Colors.white,
               onPressed: clearNotifications,
@@ -94,7 +103,7 @@ class NotificationScreen extends StatelessWidget {
               child: const Icon(Icons.clear_outlined, color: Colors.red),
             );
           } else {
-            return Container(); // Return an empty container if no notifications
+            return Container();
           }
         }),
       ),

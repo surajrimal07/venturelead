@@ -147,8 +147,11 @@ class _SignupViewState extends State<SignupView> {
                       ),
                     ),
                     validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your username';
+                      if (value == null ||
+                          value.isEmpty ||
+                          value.length < 4 ||
+                          (RegExp(r'[0-9]').hasMatch(value))) {
+                        return 'Please enter valid username';
                       }
                       return null;
                     }),
