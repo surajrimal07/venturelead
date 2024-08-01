@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:venturelead/core/utils/customWebview.dart';
 import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
 import 'package:venturelead/feathures/home/controller/news_controller.dart';
+import 'package:venturelead/feathures/home/view/page/news_summary_home.dart';
 import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
 class BlogPage extends StatefulWidget {
@@ -286,7 +286,12 @@ class NewsCard extends StatelessWidget {
       child: GestureDetector(
         onTap: () async {
           await newsController.updateNewsView(newsKey);
-          Get.to(WebViewPage(name: 'News', url: newsUrl));
+          showDialog(
+            context: Get.context!,
+            builder: (BuildContext context) {
+              return NewsSummaryModal(imageUrl: imageUrl, newsUrl: newsUrl);
+            },
+          );
         },
         child: SizedBox(
           width: 250,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:venturelead/core/utils/customWebview.dart';
 import 'package:venturelead/feathures/home/controller/appbar_controller.dart';
+import 'package:venturelead/feathures/home/view/page/news_summary_home.dart';
 import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
 class ForYouPage extends StatelessWidget {
@@ -94,8 +94,13 @@ Widget _buildFeaturedStoryCard(String category, String readTime, String title,
       width: 420,
       height: 332,
       child: GestureDetector(
-        onTap: () {
-          Get.to(WebViewPage(name: 'News', url: url));
+        onTap: () async {
+          showDialog(
+            context: Get.context!,
+            builder: (BuildContext context) {
+              return NewsSummaryModal(imageUrl: image, newsUrl: url);
+            },
+          );
         },
         child: Card(
           shape: RoundedRectangleBorder(
@@ -228,8 +233,14 @@ class NewsPage extends StatelessWidget {
 Widget _buildTrendingStoryCard(String category, String title, String date,
     String image, String readTime, String url) {
   return GestureDetector(
-    onTap: () {
-      Get.to(WebViewPage(name: 'News', url: url));
+    onTap: () async {
+      showDialog(
+        context: Get.context!,
+        builder: (BuildContext context) {
+          return NewsSummaryModal(imageUrl: image, newsUrl: url);
+        },
+      );
+      //Get.to(WebViewPage(name: 'News', url: url));
     },
     child: Card(
       shape: RoundedRectangleBorder(

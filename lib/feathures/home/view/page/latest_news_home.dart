@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:venturelead/core/utils/customWebview.dart';
 import 'package:venturelead/feathures/home/controller/news_controller.dart';
+import 'package:venturelead/feathures/home/view/page/news_summary_home.dart';
 import 'package:venturelead/feathures/home/view/widget/navigation.dart';
 
 class LatestNewsView extends StatelessWidget {
@@ -185,10 +185,16 @@ class LatestNewsView extends StatelessWidget {
       String url,
       String key) {
     final NewsController newsController = Get.put(NewsController());
+
     return GestureDetector(
       onTap: () async {
         await newsController.updateNewsView(key);
-        Get.to(WebViewPage(name: 'News', url: url));
+        showDialog(
+          context: Get.context!,
+          builder: (BuildContext context) {
+            return NewsSummaryModal(imageUrl: image, newsUrl: url);
+          },
+        );
       },
       child: Padding(
         padding: const EdgeInsets.only(right: 7.0),
@@ -221,8 +227,17 @@ class LatestNewsView extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Image.network(image,
-                      height: 150, width: 300, fit: BoxFit.cover),
+                  Expanded(
+                    child: Image.network(image,
+                        width: double.infinity, fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/images/news.jpeg',
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ); // Provide a default image asset
+                    }),
+                  ),
                   const SizedBox(height: 5),
                   Text(
                     title,
@@ -285,7 +300,12 @@ class LatestNewsView extends StatelessWidget {
       String source) {
     return GestureDetector(
       onTap: () {
-        Get.to(WebViewPage(name: 'News', url: url));
+        showDialog(
+          context: Get.context!,
+          builder: (BuildContext context) {
+            return NewsSummaryModal(imageUrl: image, newsUrl: url);
+          },
+        );
       },
       child: Card(
         shape: RoundedRectangleBorder(
@@ -317,8 +337,18 @@ class LatestNewsView extends StatelessWidget {
               ),
               Row(
                 children: [
-                  Image.network(image,
-                      height: 90, width: 130, fit: BoxFit.cover),
+                  Expanded(
+                    child: Image.network(image,
+                        height: 90, width: double.infinity, fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/images/news.jpeg',
+                        height: 90,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      );
+                    }),
+                  ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Column(

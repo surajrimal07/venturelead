@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:venturelead/core/utils/customWebview.dart';
 import 'package:venturelead/feathures/home/controller/news_controller.dart';
+import 'package:venturelead/feathures/home/view/page/news_summary_home.dart';
 
 class NewsSearchPage extends StatelessWidget {
   final String keyword;
@@ -99,7 +99,12 @@ class NewsSearchPage extends StatelessWidget {
       onTap: () async {
         await newsController.updateNewsView(newsKey);
 
-        Get.to(WebViewPage(name: 'News', url: url));
+        showDialog(
+          context: Get.context!,
+          builder: (BuildContext context) {
+            return NewsSummaryModal(imageUrl: imageUrl, newsUrl: url);
+          },
+        );
       },
       child: Card(
         margin: const EdgeInsets.symmetric(vertical: 8.0),
