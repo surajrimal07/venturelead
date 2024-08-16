@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -19,7 +20,8 @@ class NewsSummaryController extends GetxController {
       );
 
       if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
+        final responseBody = utf8.decode(response.bodyBytes);
+        final List<dynamic> data = json.decode(responseBody);
         if (data.isNotEmpty && data[0].split(" ").length >= 5) {
           summary(data[0]);
         } else {

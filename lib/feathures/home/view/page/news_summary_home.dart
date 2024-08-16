@@ -27,15 +27,18 @@ class NewsSummaryModal extends StatelessWidget {
           );
         } else if (newsSummaryController.errorMessage.isNotEmpty) {
           return AlertDialog(
-            title: const Text('Error'),
+            title: const Text('Summary Error'),
             content: Text(newsSummaryController.errorMessage.value),
             actions: [
-              TextButton(
-                child: const Text('OK'),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                child: const Text('Read Full News',
+                    style: TextStyle(color: Colors.white)),
                 onPressed: () {
                   Get.back();
+                  Get.to(WebViewPage(name: 'News', url: newsUrl));
                 },
-              ),
+              )
             ],
           );
         } else {
